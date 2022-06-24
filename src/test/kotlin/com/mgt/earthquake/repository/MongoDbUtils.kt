@@ -5,29 +5,23 @@ import org.testcontainers.utility.DockerImageName
 
 object MongoDbUtils {
 
-    var mongoDBContainer: MongoDBContainer? = null
+    var mongoDBContainer: MongoDBContainer =
+        MongoDBContainer(DockerImageName.parse("mongo:4.0.10"))
+            .withExposedPorts(27017)
 
     fun startMongoDb() {
-        if (mongoDBContainer == null) {
-            mongoDBContainer = MongoDBContainer(DockerImageName.parse("mongo:4.0.10"))
-                .withExposedPorts(27017)
-        }
-        if (!mongoDBContainer!!.isRunning) {
-            mongoDBContainer!!.start()
+        if (!mongoDBContainer.isRunning) {
+            mongoDBContainer.start()
         }
     }
 
     val mongoDbUri: String
         get() {
-            if (mongoDBContainer == null || !mongoDBContainer!!.isRunning) {
+            if (!mongoDBContainer.isRunning) {
                 startMongoDb()
             }
-            return mongoDBContainer!!.replicaSetUrl
+            return mongoDBContainer.replicaSetUrl
         }
 
-    fun closeMongoDb() {
-        if (mongoDBContainer != null) {
-            mongoDBContainer!!.close()
-        }
-    }
+    fun closeMongoDb() = mongoDBContainer.close()
 }
