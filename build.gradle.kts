@@ -37,6 +37,9 @@ dependencies {
     testImplementation("org.testcontainers:mongodb")
     testImplementation("org.testcontainers:testcontainers")
     testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.mock-server:mockserver-netty:5.13.2")
+    testImplementation("org.mock-server:mockserver-junit-jupiter:5.13.2")
+    testImplementation("io.kotest.extensions:kotest-extensions-mockserver:1.2.0")
 }
 
 

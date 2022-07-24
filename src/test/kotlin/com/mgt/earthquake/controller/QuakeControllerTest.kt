@@ -1,8 +1,6 @@
 package com.mgt.earthquake.controller
 
-import com.mgt.earthquake.model.QuakeDTO
-import com.mgt.earthquake.model.QuakeDTOList
-import com.mgt.earthquake.model.QuakeModel
+import com.mgt.earthquake.model.*
 import com.mgt.earthquake.service.QuakeService
 import com.mgt.earthquake.service.QuakeServiceImpl
 import io.kotest.core.spec.style.FunSpec
@@ -68,6 +66,29 @@ class QuakeControllerTest(
         coEvery { quakeService.createList(any()) } returns listOf(quake, quake2)
 
         val request = HttpRequest.POST<Any>("/quake/addlist", quakelist)
+
+        val httpresponse = httpClient.toBlocking().exchange(request, List::class.java)
+
+        // then
+        Assertions.assertEquals(HttpStatus.OK, httpresponse.status)
+        Assertions.assertTrue(httpresponse.body.isPresent)
+
+        val data = httpresponse.body.get()
+        logger.info("$data")
+    }
+
+    test("GET /quake/latest should complete successfully") {
+
+        // given
+        val quakeproperty = QuakeProperty(time = 123456, title = "This is sample quake test", mag = 9.5)
+        val quakegeo = QuakeGeometry(coordinates = arrayListOf(5.5, 6.6, 7.7))
+        val quakeresponsefeature = QuakeResponseFeature(id = "1234", properties = quakeproperty, geometry = quakegeo)
+        val quakeresponse = QuakeResponse(listOf(quakeresponsefeature))
+
+        // when
+        coEvery { quakeService.latestQuake() } returns quakeresponse
+
+        val request = HttpRequest.GET<String>("/quake/latest")
 
         val httpresponse = httpClient.toBlocking().exchange(request, List::class.java)
 

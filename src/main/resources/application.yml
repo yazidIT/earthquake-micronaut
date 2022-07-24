@@ -8,3 +8,6 @@ netty:
   default:
     allocator:
       max-order: 3
+client:
+  earthquake:
+    url: https://earthquake.usgs.gov

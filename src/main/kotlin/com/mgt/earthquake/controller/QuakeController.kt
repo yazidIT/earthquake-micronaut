@@ -2,6 +2,7 @@ package com.mgt.earthquake.controller
 
 import com.mgt.earthquake.model.QuakeDTO
 import com.mgt.earthquake.model.QuakeDTOList
+import com.mgt.earthquake.model.QuakeResponse
 import com.mgt.earthquake.service.QuakeService
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
@@ -31,5 +32,11 @@ class QuakeController (
     suspend fun addQuakeList(quakelist: QuakeDTOList) = withContext(Dispatchers.IO) {
 
         return@withContext quakeService.createList(quakelist.quakeList)
+    }
+
+    @Get(value = "/quake/latest")
+    suspend fun latestQuake(): QuakeResponse = withContext(Dispatchers.IO) {
+
+        return@withContext quakeService.latestQuake()
     }
 }
