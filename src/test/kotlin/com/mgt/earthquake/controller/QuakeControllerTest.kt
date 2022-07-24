@@ -12,6 +12,7 @@ import io.micronaut.test.annotation.MockBean
 import io.micronaut.test.extensions.kotest.annotation.MicronautTest
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flowOf
 import org.bson.types.ObjectId
 import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory
@@ -86,7 +87,7 @@ class QuakeControllerTest(
         val quakeresponse = QuakeResponse(listOf(quakeresponsefeature))
 
         // when
-        coEvery { quakeService.latestQuake() } returns quakeresponse
+        coEvery { quakeService.latestQuake() } returns flowOf(quakeresponse)
 
         val request = HttpRequest.GET<String>("/quake/latest")
 

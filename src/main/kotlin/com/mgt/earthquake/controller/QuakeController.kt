@@ -8,6 +8,8 @@ import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Post
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 
 @Controller
@@ -35,8 +37,6 @@ class QuakeController (
     }
 
     @Get(value = "/quake/latest")
-    suspend fun latestQuake(): QuakeResponse = withContext(Dispatchers.IO) {
+    fun latestQuake(): Flow<QuakeResponse> = quakeService.latestQuake().flowOn(Dispatchers.IO)
 
-        return@withContext quakeService.latestQuake()
-    }
 }

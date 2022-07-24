@@ -6,7 +6,9 @@ import io.kotest.core.spec.style.FunSpec
 import io.micronaut.test.annotation.MockBean
 import io.micronaut.test.extensions.kotest.annotation.MicronautTest
 import io.mockk.mockk
+import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory
+import java.time.LocalDateTime
 
 @MicronautTest
 class QuakeServiceImplTest(
@@ -26,6 +28,52 @@ class QuakeServiceImplTest(
 
         logger.info(result)
         logger.info(result2)
+    }
+
+    test("target date 1 march 2022 should return correct value of 28 Feb") {
+
+        // given
+        val targetdate = LocalDateTime.of(2022, 3, 1, 1, 9)
+
+        val result = underTest.getZeroHundredHourIso(targetdate)
+        val result2 = underTest.getTwentyThreeHundredHourIso(targetdate)
+
+        // then
+        logger.info(result)
+        logger.info(result2)
+        Assertions.assertTrue(result.contains("2022-02-28"))
+        Assertions.assertTrue(result2.contains("2022-02-28"))
+
+    }
+
+    test("target date 1 Jan 2022 should return correct value of 31 Dec 2021") {
+
+        // given
+        val targetdate = LocalDateTime.of(2022, 1, 1, 1, 9)
+
+        val result = underTest.getZeroHundredHourIso(targetdate)
+        val result2 = underTest.getTwentyThreeHundredHourIso(targetdate)
+
+        // then
+        logger.info(result)
+        logger.info(result2)
+        Assertions.assertTrue(result.contains("2021-12-31"))
+        Assertions.assertTrue(result2.contains("2021-12-31"))
+    }
+
+    test("target date 1 Mar 2020 should return correct value of 29 Feb 2020") {
+
+        // given
+        val targetdate = LocalDateTime.of(2020, 3, 1, 1, 9)
+
+        val result = underTest.getZeroHundredHourIso(targetdate)
+        val result2 = underTest.getTwentyThreeHundredHourIso(targetdate)
+
+        // then
+        logger.info(result)
+        logger.info(result2)
+        Assertions.assertTrue(result.contains("2020-02-29"))
+        Assertions.assertTrue(result2.contains("2020-02-29"))
     }
 
 }) {

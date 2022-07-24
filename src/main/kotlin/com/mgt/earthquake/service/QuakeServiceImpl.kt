@@ -6,9 +6,7 @@ import com.mgt.earthquake.model.QuakeDTO
 import com.mgt.earthquake.model.QuakeModel
 import com.mgt.earthquake.model.QuakeResponse
 import jakarta.inject.Singleton
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.toList
 import org.bson.types.ObjectId
 import java.time.LocalDateTime
@@ -16,7 +14,6 @@ import java.time.OffsetDateTime
 import java.time.YearMonth
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 @Singleton
 class QuakeServiceImpl (
@@ -57,78 +54,91 @@ class QuakeServiceImpl (
         return quakeRepo.saveAll(createlist).toList()
     }
 
-    override suspend fun latestQuake(): QuakeResponse {
+    override fun latestQuake(): Flow<QuakeResponse> =
 
-        val response = quakeClient.getTopEarthquakeForToday(
+        quakeClient.getTopEarthquakeForToday(
             "geojson", 100, 5.0, 10.0,
-            yesterdayDateZeroHundredHoursIso(), yesterdayDateTwentyThreeHundredHoursIso(), "time-asc"
-        ).flowOn(Dispatchers.IO).first()
+            yesterdayDateZeroHundredHoursIso(), yesterdayDateTwentyThreeHundredHoursIso(), "time-asc")
 
-        return response
-    }
 
-    fun yesterdayDateZeroHundredHoursIso(): String {
+    /***
+     * Get yesterday's 00:00 at GMT
+     */
+    fun getZeroHundredHourIso(targetDate: LocalDateTime): String {
 
-        val todaydatetime = LocalDateTime.now()
         val yesterday: OffsetDateTime
 
-        if(todaydatetime.dayOfMonth == 1) {
-
-            if(todaydatetime.monthValue == 1) {
-                yesterday = OffsetDateTime.of(todaydatetime.year - 1, 12, 31,
-                    0, 0, 0, 0, ZoneOffset.UTC)
-
-            } else {
-                val yearmonth = YearMonth.of(todaydatetime.year, todaydatetime.monthValue)
+        when(targetDate.dayOfMonth) {
+            1 -> {
+                yesterday = when(targetDate.monthValue) {
+                    1 -> {
+                        OffsetDateTime.of(targetDate.year - 1, 12, 31,
+                            0, 0, 0, 0, ZoneOffset.UTC)
+                    }
+                    else -> {
+                        val yearmonth = YearMonth.of(targetDate.year, targetDate.monthValue - 1)
+                        OffsetDateTime.of(
+                            targetDate.year,
+                            targetDate.monthValue - 1,
+                            yearmonth.lengthOfMonth(),
+                            0, 0, 0, 0, ZoneOffset.UTC
+                        )
+                    }
+                }
+            }
+            else -> {
                 yesterday = OffsetDateTime.of(
-                    todaydatetime.year,
-                    todaydatetime.monthValue - 1,
-                    yearmonth.lengthOfMonth(),
+                    targetDate.year,
+                    targetDate.monthValue,
+                    targetDate.dayOfMonth - 1,
                     0, 0, 0, 0, ZoneOffset.UTC
                 )
             }
-
-        } else {
-            yesterday = OffsetDateTime.of(
-                todaydatetime.year,
-                todaydatetime.monthValue,
-                todaydatetime.dayOfMonth - 1,
-                0, 0, 0, 0, ZoneOffset.UTC
-            )
         }
 
         return yesterday.format(DateTimeFormatter.ISO_DATE_TIME)
     }
 
-    fun yesterdayDateTwentyThreeHundredHoursIso(): String {
-        val todaydatetime = LocalDateTime.now()
+    fun yesterdayDateZeroHundredHoursIso() = getZeroHundredHourIso(LocalDateTime.now())
+
+
+    /***
+     * Get yesterday's 23:59 at GMT
+     */
+    fun getTwentyThreeHundredHourIso(targetDate: LocalDateTime): String {
+
         val yesterday: OffsetDateTime
 
-        if(todaydatetime.dayOfMonth == 1) {
-
-            if(todaydatetime.monthValue == 1) {
-                yesterday = OffsetDateTime.of(todaydatetime.year - 1, 12, 31,
-                    23, 59, 59, 0, ZoneOffset.UTC)
-
-            } else {
-                val yearmonth = YearMonth.of(todaydatetime.year, todaydatetime.monthValue)
+        when(targetDate.dayOfMonth) {
+            1 -> {
+                yesterday = when(targetDate.monthValue) {
+                    1 -> {
+                        OffsetDateTime.of(targetDate.year - 1, 12, 31,
+                            23, 59, 59, 0, ZoneOffset.UTC)
+                    }
+                    else -> {
+                        val yearmonth = YearMonth.of(targetDate.year, targetDate.monthValue - 1)
+                        OffsetDateTime.of(
+                            targetDate.year,
+                            targetDate.monthValue - 1,
+                            yearmonth.lengthOfMonth(),
+                            23, 59, 59, 0, ZoneOffset.UTC
+                        )
+                    }
+                }
+            }
+            else -> {
                 yesterday = OffsetDateTime.of(
-                    todaydatetime.year,
-                    todaydatetime.monthValue - 1,
-                    yearmonth.lengthOfMonth(),
+                    targetDate.year,
+                    targetDate.monthValue,
+                    targetDate.dayOfMonth - 1,
                     23, 59, 59, 0, ZoneOffset.UTC
                 )
             }
-
-        } else {
-            yesterday = OffsetDateTime.of(
-                todaydatetime.year,
-                todaydatetime.monthValue,
-                todaydatetime.dayOfMonth - 1,
-                23, 59, 59, 0, ZoneOffset.UTC
-            )
         }
 
         return yesterday.format(DateTimeFormatter.ISO_DATE_TIME)
     }
+
+    fun yesterdayDateTwentyThreeHundredHoursIso() = getTwentyThreeHundredHourIso(LocalDateTime.now())
 }
