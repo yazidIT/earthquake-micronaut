@@ -1,0 +1,26 @@
+version: "3"
+services:
+  database2:
+    image: mongo
+    container_name: mongodb
+    environment:
+      - MONGO_INITDB_DATABASE=quakedb
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./data/mongodb:/data/db
+    ports:
+      - "27017-27019:27017-27019"
+  database1:
+    image: mysql:8
+    container_name: mysqldb
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: quakedb
+      MYSQL_USER: dbuser
+      MYSQL_PASSWORD: dbuser
+    ports:
+      - "6033:3306"
+    volumes:
+      - ./data/sqldb:/var/lib/mysql
