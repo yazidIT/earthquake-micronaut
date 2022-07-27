@@ -97,6 +97,7 @@ allOpen {
         "io.micronaut.http.annotation.Controller",
         "jakarta.inject.Singleton",
         "javax.persistence.Entity",
+        "io.micronaut.data.annotation.MappedEntity",
         "javax.persistence.MappedSuperclass"
     )
 }

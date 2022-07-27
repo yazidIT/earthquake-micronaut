@@ -4,6 +4,7 @@ import com.mgt.earthquake.model.QuakeDTO
 import com.mgt.earthquake.model.QuakeDTOList
 import com.mgt.earthquake.model.QuakeResponse
 import com.mgt.earthquake.service.QuakeService
+import com.mgt.earthquake.service.QuakeSqlService
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Post
@@ -14,7 +15,8 @@ import kotlinx.coroutines.withContext
 
 @Controller
 class QuakeController (
-    private val quakeService: QuakeService
+    private val quakeService: QuakeService,
+    private val quakeSqlService: QuakeSqlService
 ) {
 
     @Get(value = "/test")
@@ -26,6 +28,7 @@ class QuakeController (
     @Post(value = "/quake/add")
     suspend fun addQuakeItem(quake: QuakeDTO) = withContext(Dispatchers.IO) {
 
+        quakeSqlService.create(quake)
         return@withContext quakeService.create(quake)
     }
 
@@ -33,6 +36,7 @@ class QuakeController (
     @Post(value = "/quake/addlist")
     suspend fun addQuakeList(quakelist: QuakeDTOList) = withContext(Dispatchers.IO) {
 
+        quakeSqlService.createList(quakelist.quakeList)
         return@withContext quakeService.createList(quakelist.quakeList)
     }
 

@@ -1,8 +1,11 @@
 package com.mgt.earthquake.controller
 
+import com.mgt.earthquake.jooqmodel.tables.records.QuakeRecord
 import com.mgt.earthquake.model.*
 import com.mgt.earthquake.service.QuakeService
 import com.mgt.earthquake.service.QuakeServiceImpl
+import com.mgt.earthquake.service.QuakeSqlService
+import com.mgt.earthquake.service.QuakeSqlServiceImpl
 import io.kotest.core.spec.style.FunSpec
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpStatus
@@ -10,7 +13,9 @@ import io.micronaut.http.client.HttpClient
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.annotation.MockBean
 import io.micronaut.test.extensions.kotest.annotation.MicronautTest
+import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import org.bson.types.ObjectId
@@ -23,7 +28,8 @@ class QuakeControllerTest(
     @Client("/")
     val httpClient: HttpClient,
 
-    val quakeService: QuakeService
+    val quakeService: QuakeService,
+    val quakeSqlService: QuakeSqlService
 
 ) : FunSpec({
 
@@ -36,9 +42,12 @@ class QuakeControllerTest(
             latitude = 3.1234, longitude = 103.3, quakeid = "fwiohfrwier1")
         val quake = QuakeModel(id= ObjectId(), title = "Quake No 1", magnitude = 6.0, quaketime = "xxx",
             latitude = 3.1234, longitude = 103.3, quakeid = "fwiohfrwier1")
+        val quakesql = QuakeRecord(id = 1234L, title = "Quake No 1", magnitude = 6.0, quaketime = "xxx",
+            latitude = 3.1234, longitude = 103.3, quakeid = "fwiohfrwier1")
 
         // when
         coEvery { quakeService.create(any()) } returns quake
+        coEvery { quakeSqlService.create(any()) } returns quakesql
 
         val request = HttpRequest.POST<Any>("/quake/add", quakedto)
 
@@ -65,6 +74,7 @@ class QuakeControllerTest(
 
         // when
         coEvery { quakeService.createList(any()) } returns listOf(quake, quake2)
+        coEvery { quakeSqlService.createList(any()) } just Runs
 
         val request = HttpRequest.POST<Any>("/quake/addlist", quakelist)
 
@@ -105,4 +115,7 @@ class QuakeControllerTest(
 
     @MockBean(QuakeServiceImpl::class)
     fun quakeService(): QuakeServiceImpl = mockk()
+
+    @MockBean(QuakeSqlServiceImpl::class)
+    fun quakeSqlService(): QuakeSqlServiceImpl = mockk()
 }

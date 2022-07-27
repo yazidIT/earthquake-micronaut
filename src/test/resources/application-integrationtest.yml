@@ -1,7 +1,16 @@
+mongodb:
+  uri: mongodb://quake:quake@localhost:27017/quakedb
+#datasources:
+#  default:
+#    url: jdbc:tc:mysql:8:///quakedb?TC_REUSABLE=true
+#    driverClassName: org.testcontainers.jdbc.ContainerDatabaseDriver
 datasources:
   default:
-    url: jdbc:tc:mysql:8:///quakedb?TC_REUSABLE=true
-    driverClassName: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:mysql://localhost:6033/quakedb
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: dbuser
+    password: dbuser
+    dialect: org.hibernate.dialect.MySQL57Dialect
 jpa:
   default:
     properties:
