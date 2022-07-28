@@ -45,7 +45,7 @@ class QuakeRepositoryTest(
     test("create Quake object and findById - success") {
 
         // given
-        val quake1 = QuakeModel(id = ObjectId(), title = "Quake NE Japan", magnitude = 6.5, latitude = 3.1414,
+        val quake1 = QuakeModel(title = "Quake NE Japan", magnitude = 6.5, latitude = 3.1414,
             longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000hfxm")
 
         underTest.save(quake1)
@@ -55,7 +55,7 @@ class QuakeRepositoryTest(
         Assertions.assertTrue(result.isNotEmpty())
         logger.info("$result")
 
-        val result2 = underTest.findById(quake1.id)
+        val result2 = underTest.findById(result[0].id!!)
 
         // then
         Assertions.assertNotNull(result2)
@@ -65,9 +65,9 @@ class QuakeRepositoryTest(
     test("create Quake objects, and delete By Id - success") {
 
         // given
-        val quake1 = QuakeModel(id = ObjectId(), title = "Quake NE Japan", magnitude = 6.5, latitude = 3.1414,
+        val quake1 = QuakeModel(title = "Quake NE Japan", magnitude = 6.5, latitude = 3.1414,
             longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000hfxm")
-        val quake2 = QuakeModel(id = ObjectId(), title = "Quake NE Japan2", magnitude = 6.9, latitude = 5.73455,
+        val quake2 = QuakeModel(title = "Quake NE Japan2", magnitude = 6.9, latitude = 5.73455,
             longitude = 90.232323, quaketime = "2022-05-22T06:15:23.756000", quakeid = "us6000hfjk")
 
         underTest.saveAll(listOf(quake1, quake2)).toList()
@@ -77,7 +77,7 @@ class QuakeRepositoryTest(
         Assertions.assertEquals(2, result.size)
         logger.info("$result")
 
-        underTest.deleteById(result[0].id)
+        underTest.deleteById(result[0].id!!)
         val result2 = underTest.findAll().toList()
 
         Assertions.assertEquals(1, result2.size)

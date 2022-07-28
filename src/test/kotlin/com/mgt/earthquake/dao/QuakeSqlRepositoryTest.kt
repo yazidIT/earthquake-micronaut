@@ -7,7 +7,7 @@ import io.micronaut.test.extensions.kotest.annotation.MicronautTest
 import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory
 
-@MicronautTest(startApplication = false, environments = ["integrationtest"])
+@MicronautTest(startApplication = false, environments = ["repositorytest"])
 class QuakeSqlRepositoryTest(
 
     val underTest: QuakeSqlRepository

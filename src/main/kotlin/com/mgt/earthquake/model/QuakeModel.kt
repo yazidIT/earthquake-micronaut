@@ -17,7 +17,7 @@ data class QuakeModel @JsonCreator constructor(
 
     @field:Id
     @GeneratedValue
-    var id: ObjectId,
+    var id: ObjectId? = null,
 
     @param:JsonProperty("title")
     var title: String,
