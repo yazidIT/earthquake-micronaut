@@ -1,4 +1,4 @@
-package com.mgt.earthquake.repository
+package com.mgt.earthquake.dao
 
 import org.testcontainers.containers.MongoDBContainer
 import org.testcontainers.utility.DockerImageName

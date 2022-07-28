@@ -1,13 +1,11 @@
-package com.mgt.earthquake.repository
+package com.mgt.earthquake.dao
 
-import com.mgt.earthquake.dao.QuakeRepository
 import com.mgt.earthquake.model.QuakeModel
-import com.mgt.earthquake.repository.MongoDbUtils.mongoDbUri
+import com.mgt.earthquake.dao.MongoDbUtils.mongoDbUri
 import io.kotest.core.spec.style.FunSpec
 import io.micronaut.context.ApplicationContext
 import io.micronaut.test.support.TestPropertyProvider
 import kotlinx.coroutines.flow.toList
-import org.bson.types.ObjectId
 import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory
 import org.testcontainers.junit.jupiter.Testcontainers

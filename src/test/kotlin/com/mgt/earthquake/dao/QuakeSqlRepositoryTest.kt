@@ -2,7 +2,6 @@ package com.mgt.earthquake.dao
 
 import com.mgt.earthquake.jooqmodel.tables.pojos.Quake
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.shouldBe
 import io.micronaut.test.extensions.kotest.annotation.MicronautTest
 import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory
