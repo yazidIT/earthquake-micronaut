@@ -1,17 +1,18 @@
 version: "3"
 services:
   database2:
-    image: mongo
+    image: bitnami/mongodb:4.4
     container_name: mongodb
     environment:
-      - MONGO_INITDB_DATABASE=quakedb
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=admin
+      - MONGODB_ROOT_USER=admin
+      - MONGODB_ROOT_PASSWORD=admin
+      - MONGODB_USERNAME=quake
+      - MONGODB_PASSWORD=quake
+      - MONGODB_DATABASE=quakedb
     volumes:
-      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-      - ./data/mongodb:/data/db
+      - ./data/mongodb:/bitnami/mongodb         # ./data - user owned. ./data/mongodb - sudo chown -R 1001 ./data/mongodb
     ports:
-      - "27017-27019:27017-27019"
+      - "27017:27017"
   database1:
     image: mysql:8
     container_name: mysqldb
