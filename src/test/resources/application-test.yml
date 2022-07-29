@@ -22,6 +22,9 @@ flyway:
   datasources:
     default:
       enabled: false
+client:
+  earthquake:
+    url: "http://localhost:5000"
 logger:
   levels:
     io.micronaut.context.condition: TRACE
