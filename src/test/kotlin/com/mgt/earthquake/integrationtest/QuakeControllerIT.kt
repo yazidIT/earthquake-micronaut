@@ -7,6 +7,7 @@ import com.mgt.earthquake.model.QuakeModel
 import io.kotest.core.spec.style.FunSpec
 import io.micronaut.core.type.Argument
 import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.HttpClient
 import io.micronaut.http.client.annotation.Client
@@ -37,7 +38,7 @@ class QuakeControllerIT(
 
         val request = HttpRequest.GET<String>("/quake/latest")
 
-        val httpresponse = httpClient.toBlocking().exchange(request, List::class.java)
+        val httpresponse: HttpResponse<List<*>> = httpClient.toBlocking().exchange(request, List::class.java)
 
         // then
         Assertions.assertEquals(HttpStatus.OK, httpresponse.status)
@@ -57,7 +58,7 @@ class QuakeControllerIT(
 
         val request = HttpRequest.POST("/quake/add", quakedto)
 
-        val httpresponse = httpClient.toBlocking().exchange(request, Argument.of(QuakeModel::class.java))
+        val httpresponse: HttpResponse<QuakeModel> = httpClient.toBlocking().exchange(request, Argument.of(QuakeModel::class.java))
 
         // then
         Assertions.assertEquals(HttpStatus.OK, httpresponse.status)

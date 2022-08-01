@@ -2,7 +2,6 @@ package com.mgt.earthquake.model
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
-import io.micronaut.core.annotation.Introspected
 import io.micronaut.data.annotation.GeneratedValue
 import io.micronaut.data.annotation.Id
 import io.micronaut.data.annotation.MappedEntity
@@ -11,7 +10,6 @@ import org.bson.types.ObjectId
 
 @Serdeable.Deserializable
 @Serdeable.Serializable
-@Introspected
 @MappedEntity(value = "quake")
 data class QuakeModel @JsonCreator constructor(
 

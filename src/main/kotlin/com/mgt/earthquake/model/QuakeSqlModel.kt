@@ -6,7 +6,7 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 
 @Entity(name = "quake")
-data class QuakeSqlModel(
+class QuakeSqlModel(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
