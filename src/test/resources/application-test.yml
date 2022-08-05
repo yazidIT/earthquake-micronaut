@@ -7,17 +7,18 @@ datasources:
   default:
     url: jdbc:h2:mem:devDb;DATABASE_TO_UPPER=FALSE;DB_CLOSE_ON_EXIT=FALSE
     driverClassName: org.h2.Driver
-jooq:
-  datasources:
-    default:
-      sql-dialect: 'MYSQL'
+    dialect: org.hibernate.dialect.H2Dialect
+    db-type: h2
 jpa:
   default:
     properties:
       hibernate:
-        hbm2ddl:
-          auto: create-drop
-        show_sql: true
+#        hbm2ddl:
+#          auto: update
+#        connection:
+#          url: ${datasources.default.url}
+        dialect: ${datasources.default.dialect}
+    reactive: false
 flyway:
   datasources:
     default:
