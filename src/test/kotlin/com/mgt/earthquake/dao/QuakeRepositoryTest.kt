@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory
 import org.testcontainers.junit.jupiter.Testcontainers
 
-@Testcontainers
 class QuakeRepositoryTest(
 
 ): FunSpec({

@@ -1,5 +1,3 @@
-mongodb:
-  uri: mongodb://quake:quake@localhost:27017/quakedb
 datasources:
   default:
     url: jdbc:tc:mysql:8:///quakedb?TC_REUSABLE=true
