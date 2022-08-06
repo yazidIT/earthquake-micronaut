@@ -4,10 +4,26 @@ datasources:
   default:
     url: jdbc:tc:mysql:8:///quakedb?TC_REUSABLE=true
     driverClassName: org.testcontainers.jdbc.ContainerDatabaseDriver
+    db-type: mysql
+    username: dbuser
+    password: dbuser
 jpa:
   default:
+    reactive: true
     properties:
       hibernate:
         hbm2ddl:
-          auto: update
-        show_sql: true
+          auto: create-drop
+        connection:
+          url: ${datasources.default.url}
+          username: ${datasources.default.username}
+          password: ${datasources.default.password}
+vertx:
+  mysql:
+    client:
+      port: 6033
+      host: http://localhost
+      database: quakedb
+      user: ${datasources.default.username}
+      password: ${datasources.default.password}
+      maxSize: 5

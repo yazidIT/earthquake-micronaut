@@ -11,6 +11,7 @@ datasources:
     db-type: h2
 jpa:
   default:
+    reactive: false
     properties:
       hibernate:
 #        hbm2ddl:
@@ -18,7 +19,7 @@ jpa:
 #        connection:
 #          url: ${datasources.default.url}
         dialect: ${datasources.default.dialect}
-    reactive: false
+
 flyway:
   datasources:
     default:
