@@ -7,7 +7,7 @@ datasources:
   default:
     url: jdbc:mysql://localhost:6033/quakedb
     driverClassName: com.mysql.cj.jdbc.Driver
-    dialect: org.hibernate.dialect.MySQL8Dialect
+    dialect: org.hibernate.dialect.MySQL57Dialect
     db-type: mysql
     username: dbuser
     password: dbuser
@@ -17,7 +17,6 @@ jooq:
       sql-dialect: 'MYSQL'
 jpa:
   default:
-    reactive: true
     properties:
       hibernate:
         hbm2ddl:
@@ -26,6 +25,7 @@ jpa:
           url: ${datasources.default.url}
           username: ${datasources.default.username}
           password: ${datasources.default.password}
+    reactive: true
 flyway:
   datasources:
     default:
