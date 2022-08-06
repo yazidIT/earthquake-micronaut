@@ -3,9 +3,16 @@ package com.mgt.earthquake.dao
 import com.mgt.earthquake.model.QuakeModel
 import com.mgt.earthquake.dao.MongoDbUtils.mongoDbUri
 import io.kotest.core.spec.style.FunSpec
+import io.micronaut.configuration.mongo.core.CodecRegistryBuilder
 import io.micronaut.context.ApplicationContext
+import io.micronaut.test.extensions.kotest.annotation.MicronautTest
 import io.micronaut.test.support.TestPropertyProvider
+import jakarta.inject.Inject
 import kotlinx.coroutines.flow.toList
+import org.bson.UuidRepresentation
+import org.bson.codecs.UuidCodecProvider
+import org.bson.codecs.configuration.CodecRegistry
+import org.bson.internal.OverridableUuidRepresentationCodecRegistry
 import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory
 import org.testcontainers.junit.jupiter.Testcontainers
