@@ -9,8 +9,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.allopen") version "1.6.21"
     id("org.jetbrains.kotlin.plugin.jpa") version "1.6.21"
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("io.micronaut.application") version "3.5.1"
-    id("io.micronaut.test-resources") version "3.5.1"
+    id("io.micronaut.application") version "3.4.1"
     id("nu.studer.jooq") version "7.1.1"
 }
 
@@ -33,15 +32,13 @@ dependencies {
     implementation("io.micronaut.data:micronaut-data-mongodb")
 
     implementation("io.micronaut.flyway:micronaut-flyway")
-    implementation("io.micronaut.sql:micronaut-hibernate-reactive")
+    implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
     implementation("io.micronaut.sql:micronaut-jdbc-hikari")
     implementation("io.micronaut.sql:micronaut-jooq")
-    implementation("io.vertx:vertx-mysql-client")
 
     implementation("io.micronaut.kotlin:micronaut-kotlin-extension-functions")
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
     implementation("io.micronaut.reactor:micronaut-reactor")
-    implementation("io.micronaut.reactor:micronaut-reactor-http-client")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
@@ -63,7 +60,7 @@ dependencies {
 
     testImplementation("org.mock-server:mockserver-netty:5.13.2")
     testImplementation("org.mock-server:mockserver-junit-jupiter:5.13.2")
-    testImplementation("io.kotest.extensions:kotest-extensions-mockserver:1.2.1")
+    testImplementation("io.kotest.extensions:kotest-extensions-mockserver:1.2.0")
 }
 
 
