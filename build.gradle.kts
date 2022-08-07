@@ -23,18 +23,17 @@ repositories {
 
 dependencies {
     kapt("io.micronaut:micronaut-http-validation")
-    kapt("io.micronaut.data:micronaut-data-processor")
     kapt("io.micronaut.data:micronaut-data-document-processor")
 
     implementation("jakarta.annotation:jakarta.annotation-api")
-    implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut:micronaut-jackson-databind")
-    implementation("io.micronaut.data:micronaut-data-mongodb")
+    implementation("io.micronaut:micronaut-http-client")
 
     implementation("io.micronaut.flyway:micronaut-flyway")
-    implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
+    implementation("io.micronaut.sql:micronaut-hibernate-jpa")
     implementation("io.micronaut.sql:micronaut-jdbc-hikari")
     implementation("io.micronaut.sql:micronaut-jooq")
+    implementation("io.micronaut.data:micronaut-data-mongodb")
 
     implementation("io.micronaut.kotlin:micronaut-kotlin-extension-functions")
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
@@ -45,13 +44,13 @@ dependencies {
 
     implementation("io.micronaut:micronaut-validation")
 
-    runtimeOnly("com.h2database:h2")
-    runtimeOnly("org.flywaydb:flyway-mysql")
-    runtimeOnly("mysql:mysql-connector-java")
-
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("org.mongodb:mongodb-driver-reactivestreams")
+
+    runtimeOnly("com.h2database:h2")
+    runtimeOnly("org.flywaydb:flyway-mysql")
+    runtimeOnly("mysql:mysql-connector-java")
 
     testImplementation("org.testcontainers:mongodb")
     testImplementation("org.testcontainers:testcontainers")
@@ -60,7 +59,7 @@ dependencies {
 
     testImplementation("org.mock-server:mockserver-netty:5.13.2")
     testImplementation("org.mock-server:mockserver-junit-jupiter:5.13.2")
-    testImplementation("io.kotest.extensions:kotest-extensions-mockserver:1.2.0")
+    testImplementation("io.kotest.extensions:kotest-extensions-mockserver:1.2.1")
 }
 
 
