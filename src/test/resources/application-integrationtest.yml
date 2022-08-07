@@ -1,9 +1,5 @@
 mongodb:
   uri: mongodb://quake:quake@localhost:27017/quakedb
-#datasources:
-#  default:
-#    url: jdbc:tc:mysql:8:///quakedb?TC_REUSABLE=true
-#    driverClassName: org.testcontainers.jdbc.ContainerDatabaseDriver
 datasources:
   default:
     url: jdbc:mysql://localhost:6033/quakedb
@@ -16,8 +12,12 @@ jpa:
     properties:
       hibernate:
         hbm2ddl:
-          auto: update
+          auto: none
         show_sql: true
+flyway:
+  datasources:
+    default:
+      enabled: true
 client:
   earthquake:
     url: https://earthquake.usgs.gov
