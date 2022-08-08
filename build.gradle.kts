@@ -11,6 +11,18 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("io.micronaut.application") version "3.4.1"
     id("nu.studer.jooq") version "7.1.1"
+    id("org.sonarqube") version "3.3"
+}
+
+sonarqube {
+    properties {
+        val projectName = "EarthQuake-Micronaut"
+        property("sonar.projectName", projectName)
+        property("sonar.projectVersion", project.version.toString())
+        property("sonar.host.url", "http://localhost:9000")
+        property("sonar.login", "admin")
+        property("sonar.password", "YAZsonarqube1234")
+    }
 }
 
 version = "0.1"
