@@ -8,8 +8,8 @@ import io.micronaut.data.annotation.MappedEntity
 import io.micronaut.serde.annotation.Serdeable
 import org.bson.types.ObjectId
 
-@Serdeable.Deserializable
-@Serdeable.Serializable
+
+@Serdeable
 @MappedEntity(value = "quake")
 data class QuakeModel @JsonCreator constructor(
 

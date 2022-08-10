@@ -1,15 +1,15 @@
 package com.mgt.earthquake.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import io.micronaut.core.annotation.Introspected
+import io.micronaut.serde.annotation.Serdeable
 
-@Introspected
+@Serdeable
 data class QuakeResponse (
     @param:JsonProperty("features")
     val features: List<QuakeResponseFeature>
 )
 
-@Introspected
+@Serdeable
 data class QuakeResponseFeature (
     @param:JsonProperty("id")
     val id: String,
@@ -19,7 +19,7 @@ data class QuakeResponseFeature (
     val geometry: QuakeGeometry
 )
 
-@Introspected
+@Serdeable
 data class QuakeProperty(
     @param:JsonProperty("time")
     val time: Long,
@@ -29,7 +29,7 @@ data class QuakeProperty(
     val mag: Double
 )
 
-@Introspected
+@Serdeable
 data class QuakeGeometry(
     @param:JsonProperty("coordinates")
     val coordinates: ArrayList<Double>

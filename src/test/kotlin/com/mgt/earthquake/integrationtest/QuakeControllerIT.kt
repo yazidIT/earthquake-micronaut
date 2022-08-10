@@ -38,7 +38,7 @@ class QuakeControllerIT(
 
         val request = HttpRequest.GET<String>("/quake/latest")
 
-        val httpresponse: HttpResponse<List<*>> = httpClient.toBlocking().exchange(request, List::class.java)
+        val httpresponse: HttpResponse<List<*>> = httpClient.toBlocking().exchange(request, Argument.of(List::class.java))
 
         // then
         Assertions.assertEquals(HttpStatus.OK, httpresponse.status)

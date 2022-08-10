@@ -17,9 +17,10 @@ import kotlinx.coroutines.withContext
 @Controller
 class QuakeController (
     private val quakeService: QuakeService,
-    private val quakeSqlService: QuakeSqlService,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val quakeSqlService: QuakeSqlService
 ) {
+
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 
     @Get(value = "/test")
     suspend fun serverTest() = withContext(ioDispatcher) {
