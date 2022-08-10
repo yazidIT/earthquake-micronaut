@@ -8,6 +8,7 @@ import com.mgt.earthquake.service.QuakeSqlService
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Post
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -19,14 +20,16 @@ class QuakeController (
     private val quakeSqlService: QuakeSqlService
 ) {
 
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+
     @Get(value = "/test")
-    suspend fun serverTest() = withContext(Dispatchers.IO) {
+    suspend fun serverTest() = withContext(ioDispatcher) {
         "Hello world\n"
     }
 
 
     @Post(value = "/quake/add")
-    suspend fun addQuakeItem(quake: QuakeDTO) = withContext(Dispatchers.IO) {
+    suspend fun addQuakeItem(quake: QuakeDTO) = withContext(ioDispatcher) {
 
         quakeSqlService.create(quake)
         return@withContext quakeService.create(quake)
@@ -34,13 +37,13 @@ class QuakeController (
 
 
     @Post(value = "/quake/addlist")
-    suspend fun addQuakeList(quakelist: QuakeDTOList) = withContext(Dispatchers.IO) {
+    suspend fun addQuakeList(quakelist: QuakeDTOList) = withContext(ioDispatcher) {
 
         quakeSqlService.createList(quakelist.quakeList)
         return@withContext quakeService.createList(quakelist.quakeList)
     }
 
     @Get(value = "/quake/latest")
-    fun latestQuake(): Flow<QuakeResponse> = quakeService.latestQuake().flowOn(Dispatchers.IO)
+    fun latestQuake(): Flow<QuakeResponse> = quakeService.latestQuake().flowOn(ioDispatcher)
 
 }
