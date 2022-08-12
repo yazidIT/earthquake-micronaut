@@ -10,7 +10,7 @@ datasources:
 r2dbc:
   datasources:
     default:
-      url: r2dbc:h2:mem:devDb;DATABASE_TO_UPPER=FALSE;DB_CLOSE_ON_EXIT=FALSE
+      url: r2dbc:h2:mem:///devDb;DATABASE_TO_UPPER=FALSE;DB_CLOSE_ON_EXIT=FALSE
       schema-generate: NONE
       dialect: H2
 jpa:

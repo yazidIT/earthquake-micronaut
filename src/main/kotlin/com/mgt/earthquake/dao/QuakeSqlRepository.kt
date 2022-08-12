@@ -4,15 +4,17 @@ import com.mgt.earthquake.jooqmodel.tables.daos.QuakeDao
 import com.mgt.earthquake.jooqmodel.tables.pojos.Quake
 import com.mgt.earthquake.jooqmodel.tables.records.QuakeRecord
 import com.mgt.earthquake.jooqmodel.tables.references.QUAKE
+import io.micronaut.data.r2dbc.annotation.R2dbcRepository
 import io.micronaut.transaction.annotation.ReadOnly
+import io.micronaut.transaction.annotation.TransactionalAdvice
 import jakarta.inject.Named
-import jakarta.inject.Singleton
 import org.jooq.Configuration
 import org.jooq.DSLContext
 import org.slf4j.LoggerFactory
 import javax.transaction.Transactional
 
-@Singleton
+@R2dbcRepository(value = "default")
+@TransactionalAdvice("default")
 class QuakeSqlRepository (
     private val dslContext: DSLContext,
     @Named("CustomJooqConfig") private val configuration: Configuration,

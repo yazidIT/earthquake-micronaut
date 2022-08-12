@@ -7,7 +7,7 @@ datasources:
 r2dbc:
   datasources:
     default:
-      url: r2dbc:tc:mysql:///quakedb?TC_IMAGE_TAG=8.0;TC_REUSABLE=true
+      url: r2dbc:tc:mysql:///quakedb?TC_IMAGE_TAG=8;TC_REUSABLE=true
       schema-generate: NONE
       dialect: MYSQL
 jpa:

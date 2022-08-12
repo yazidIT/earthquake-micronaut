@@ -5,6 +5,9 @@ datasources:
     url: jdbc:mysql://localhost:6033/quakedb
     driverClassName: com.mysql.cj.jdbc.Driver
     db-type: mysql
+    username: dbuser
+    password: dbuser
+    dialect: org.hibernate.dialect.MySQL57Dialect
 r2dbc:
   datasources:
     default:
