@@ -4,6 +4,12 @@ datasources:
   default:
     url: jdbc:tc:mysql:8:///quakedb?TC_REUSABLE=true
     driverClassName: org.testcontainers.jdbc.ContainerDatabaseDriver
+r2dbc:
+  datasources:
+    default:
+      url: r2dbc:tc:mysql:///quakedb?TC_IMAGE_TAG=8.0;TC_REUSABLE=true
+      schema-generate: NONE
+      dialect: MYSQL
 jpa:
   default:
     properties:
