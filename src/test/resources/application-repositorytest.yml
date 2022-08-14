@@ -1,11 +1,23 @@
-datasources:
-  default:
-    url: jdbc:tc:mysql:8:///quakedb?TC_REUSABLE=true
-    driverClassName: org.testcontainers.jdbc.ContainerDatabaseDriver
+mongodb:
+  uri: mongodb://quake:quake@localhost:27017/quakedb
+#datasources:
+#  default:
+#    url: jdbc:tc:mysql:8:///test?TC_REUSABLE=true
+#    driverClassName: org.testcontainers.jdbc.ContainerDatabaseDriver
+#    username: test
+#    password: test
+r2dbc:
+  datasources:
+    default:
+      url: r2dbc:tc:mysql:///test?TC_IMAGE_TAG=8
+      username: test
+      password: test
+      schema-generate: NONE
+      dialect: MYSQL
 jpa:
   default:
     properties:
       hibernate:
         hbm2ddl:
-          auto: update
+          auto: none
         show_sql: true

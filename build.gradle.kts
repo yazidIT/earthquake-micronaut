@@ -36,12 +36,14 @@ repositories {
 dependencies {
     kapt("io.micronaut:micronaut-http-validation")
     kapt("io.micronaut.data:micronaut-data-document-processor")
+    kapt("io.micronaut.data:micronaut-data-processor")
 
     implementation("jakarta.annotation:jakarta.annotation-api")
     implementation("io.micronaut:micronaut-jackson-databind")
     implementation("io.micronaut:micronaut-http-client")
 
     implementation("io.micronaut.flyway:micronaut-flyway")
+    implementation("io.micronaut.data:micronaut-data-r2dbc")
     implementation("io.micronaut.sql:micronaut-hibernate-jpa")
     implementation("io.micronaut.sql:micronaut-jdbc-hikari")
     implementation("io.micronaut.sql:micronaut-jooq")
@@ -61,13 +63,16 @@ dependencies {
     runtimeOnly("org.mongodb:mongodb-driver-reactivestreams")
 
     runtimeOnly("com.h2database:h2")
+    runtimeOnly("io.r2dbc:r2dbc-h2")
     runtimeOnly("org.flywaydb:flyway-mysql")
     runtimeOnly("mysql:mysql-connector-java")
+    runtimeOnly("dev.miku:r2dbc-mysql")
 
     testImplementation("org.testcontainers:mongodb")
     testImplementation("org.testcontainers:testcontainers")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:mysql")
+    testImplementation("org.testcontainers:r2dbc")
 
     testImplementation("org.mock-server:mockserver-netty:5.13.2")
     testImplementation("org.mock-server:mockserver-junit-jupiter:5.13.2")

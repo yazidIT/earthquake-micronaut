@@ -1,85 +1,113 @@
 package com.mgt.earthquake.dao
 
-import com.mgt.earthquake.jooqmodel.tables.daos.QuakeDao
 import com.mgt.earthquake.jooqmodel.tables.pojos.Quake
 import com.mgt.earthquake.jooqmodel.tables.records.QuakeRecord
 import com.mgt.earthquake.jooqmodel.tables.references.QUAKE
+import io.micronaut.data.r2dbc.annotation.R2dbcRepository
 import io.micronaut.transaction.annotation.ReadOnly
+import io.micronaut.transaction.annotation.TransactionalAdvice
 import jakarta.inject.Named
-import jakarta.inject.Singleton
 import org.jooq.Configuration
 import org.jooq.DSLContext
 import org.slf4j.LoggerFactory
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import javax.transaction.Transactional
 
-@Singleton
+@R2dbcRepository(value = "default")
+@TransactionalAdvice("default")
 class QuakeSqlRepository (
-    private val dslContext: DSLContext,
+    @Named("R2dbcJooqDslContext") private val dslContext: DSLContext,
     @Named("CustomJooqConfig") private val configuration: Configuration,
 ) {
 
     private val logger = LoggerFactory.getLogger(this::class.java)
-    private val quakeDao = QuakeDao(configuration)
 
 
     @ReadOnly
     fun findAll(): List<Quake> {
 
-        return runCatching {
-            dslContext.selectFrom(QUAKE)
-                .fetchInto(Quake::class.java)
-
-        }.getOrElse {
-            logger.error(it.message)
-            emptyList()
-        }
+        return Flux.from(
+            dslContext.selectFrom(QUAKE))
+            .map { it.into(Quake::class.java) }
+            .toStream()
+            .toList()
     }
 
 
     @ReadOnly
-    fun findById(id: Long): Quake? = quakeDao.fetchOneById(id)
+    fun findById(id: Long): Quake? {
+
+        return Mono.from(
+            dslContext.selectFrom(QUAKE)
+                .where(QUAKE.ID.eq(id)))
+            .map { it.into(Quake::class.java) }
+            .block()
+    }
 
     @ReadOnly
-    fun findByQuakeId(quakeid: String): Quake? = quakeDao.fetchOne(QUAKE.QUAKEID, quakeid)
+    fun findByQuakeId(quakeid: String): Quake? {
+
+        return Mono.from(
+            dslContext.selectFrom(QUAKE)
+                .where(QUAKE.QUAKEID.eq(quakeid)))
+            .map { it.into(Quake::class.java) }
+            .block()
+    }
 
 
     @Transactional
-    fun create(quakePojo: Quake): QuakeRecord {
+    fun create(quakePojo: Quake): QuakeRecord? {
 
         val createdquake = dslContext.newRecord(QUAKE)
-        createdquake.apply {
-            title = quakePojo.title
-            magnitude = quakePojo.magnitude
-            quaketime = quakePojo.quaketime
-            latitude = quakePojo.latitude
-            longitude = quakePojo.longitude
-            quakeid = quakePojo.quakeid
-        }
+        createdquake.from(quakePojo)
 
-        createdquake.store()
-        return createdquake
+        val result = Mono.from(
+            dslContext.insertInto(QUAKE)
+                .set(createdquake)
+                .returningResult(QUAKE.ID))
+            .block()
+
+        return createdquake.apply { id = result!!.value1() }
     }
 
     @Transactional
-    fun update(quakePojo: Quake) = quakeDao.update(quakePojo)
+    fun update(quakePojo: Quake) {
+
+        val createdquake = dslContext.newRecord(QUAKE)
+        createdquake.from(quakePojo)
+
+        Mono.from(
+            dslContext.update(QUAKE)
+                .set(createdquake)
+                .where(QUAKE.ID.eq(quakePojo.id))
+                .returningResult(QUAKE.ID))
+            .block()
+    }
 
 
     @Transactional
-    fun createQuakes(quakePojos : List<Quake>) = quakeDao.insert(quakePojos)
+    fun createQuakes(quakePojos : List<Quake>) = quakePojos.map { create(it) }
 
 
     @Transactional
-    fun delete(id: Long) = quakeDao.fetchOneById(id)?.let { quakeDao.delete(it) }
+    fun delete(id: Long) = delete(listOf(id))
 
 
     @Transactional
-    fun delete(ids: List<Long>) = quakeDao.deleteById(ids)
+    fun delete(ids: List<Long>) {
+
+        Mono.from(
+            dslContext.deleteFrom(QUAKE).where(QUAKE.ID.`in`(ids)))
+            .block()
+    }
 
 
     @Transactional
     fun deleteAll() {
 
-        val allIds = findAll().map { it.id }
-        quakeDao.deleteById(allIds)
+        Mono.from(
+            dslContext.deleteFrom(QUAKE))
+            .block()
     }
 }
