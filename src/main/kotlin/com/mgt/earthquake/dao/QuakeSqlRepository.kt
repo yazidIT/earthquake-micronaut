@@ -27,17 +27,11 @@ class QuakeSqlRepository (
     @ReadOnly
     fun findAll(): List<Quake> {
 
-        return runCatching {
-            Flux.from(
-                dslContext.selectFrom(QUAKE))
-                .map { it.into(Quake::class.java) }
-                .toStream()
-                .toList()
-
-        }.getOrElse {
-            logger.error(it.message)
-            emptyList()
-        }
+        return Flux.from(
+            dslContext.selectFrom(QUAKE))
+            .map { it.into(Quake::class.java) }
+            .toStream()
+            .toList()
     }
 
 
@@ -97,23 +91,23 @@ class QuakeSqlRepository (
 
 
     @Transactional
-    fun delete(id: Long) {
-        Mono.from(
-            dslContext.deleteFrom(QUAKE)
-                .where(QUAKE.ID.eq(id)))
-            .block()
-    }
+    fun delete(id: Long) = delete(listOf(id))
 
 
     @Transactional
-    fun delete(ids: List<Long>) = ids.map { delete(it) }
+    fun delete(ids: List<Long>) {
+
+        Mono.from(
+            dslContext.deleteFrom(QUAKE).where(QUAKE.ID.`in`(ids)))
+            .block()
+    }
 
 
     @Transactional
     fun deleteAll() {
 
         Mono.from(
-            dslContext.deleteFrom(QUAKE)
-        ).block()
+            dslContext.deleteFrom(QUAKE))
+            .block()
     }
 }
