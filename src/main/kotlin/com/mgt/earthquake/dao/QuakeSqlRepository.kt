@@ -10,13 +10,17 @@ import io.micronaut.transaction.annotation.TransactionalAdvice
 import jakarta.inject.Named
 import org.jooq.Configuration
 import org.jooq.DSLContext
+import org.jooq.impl.DSL.field
+import org.jooq.impl.SQLDataType.INTEGER
 import org.slf4j.LoggerFactory
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import javax.transaction.Transactional
 
 @R2dbcRepository(value = "default")
 @TransactionalAdvice("default")
 class QuakeSqlRepository (
-    private val dslContext: DSLContext,
+    @Named("R2dbcJooqDslContext") private val dslContext: DSLContext,
     @Named("CustomJooqConfig") private val configuration: Configuration,
 ) {
 
@@ -28,13 +32,25 @@ class QuakeSqlRepository (
     fun findAll(): List<Quake> {
 
         return runCatching {
-            dslContext.selectFrom(QUAKE)
-                .fetchInto(Quake::class.java)
+            Flux.from(
+                dslContext.selectFrom(QUAKE)
+            ).map { it.into(Quake::class.java) }
+                .toStream()
+                .toList()
 
         }.getOrElse {
             logger.error(it.message)
             emptyList()
         }
+
+//        return runCatching {
+//            dslContext.selectFrom(QUAKE)
+//                .fetchInto(Quake::class.java)
+//
+//        }.getOrElse {
+//            logger.error(it.message)
+//            emptyList()
+//        }
     }
 
 
@@ -46,7 +62,7 @@ class QuakeSqlRepository (
 
 
     @Transactional
-    fun create(quakePojo: Quake): QuakeRecord {
+    fun create(quakePojo: Quake): QuakeRecord? {
 
         val createdquake = dslContext.newRecord(QUAKE)
         createdquake.apply {
@@ -58,8 +74,11 @@ class QuakeSqlRepository (
             quakeid = quakePojo.quakeid
         }
 
-        createdquake.store()
-        return createdquake
+        return Mono.from(
+            dslContext.insertInto(QUAKE)
+                .set(createdquake)
+                .returning(field("id", INTEGER.identity(true)))
+        ).block()
     }
 
     @Transactional
@@ -81,7 +100,8 @@ class QuakeSqlRepository (
     @Transactional
     fun deleteAll() {
 
-        val allIds = findAll().map { it.id }
-        quakeDao.deleteById(allIds)
+        Mono.from(
+            dslContext.deleteFrom(QUAKE)
+        ).block()
     }
 }

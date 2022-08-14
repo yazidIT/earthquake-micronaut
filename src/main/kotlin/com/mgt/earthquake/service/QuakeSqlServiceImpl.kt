@@ -16,7 +16,7 @@ class QuakeSqlServiceImpl (
     private val quakeRepo: QuakeSqlRepository
 ) : QuakeSqlService {
 
-    override fun create(quakedto: QuakeDTO): QuakeRecord {
+    override fun create(quakedto: QuakeDTO): QuakeRecord? {
 
         val quakeitem = Quake(
             title = quakedto.title,

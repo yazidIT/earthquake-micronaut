@@ -2,33 +2,70 @@ package com.mgt.earthquake.dao
 
 import com.mgt.earthquake.jooqmodel.tables.pojos.Quake
 import io.kotest.core.spec.style.FunSpec
-import io.micronaut.test.extensions.kotest.annotation.MicronautTest
+import io.micronaut.context.ApplicationContext
+import io.micronaut.test.support.TestPropertyProvider
+import org.flywaydb.core.Flyway
+import org.flywaydb.core.api.Location
+import org.flywaydb.core.api.configuration.ClassicConfiguration
 import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory
 
-@MicronautTest(startApplication = false, environments = ["repositorytest"])
-class QuakeSqlRepositoryTest(
 
-    val underTest: QuakeSqlRepository
+class QuakeSqlRepositoryTest(
 
 ) : FunSpec({
 
-    beforeSpec {
+    val map = mutableMapOf<String, Any>(
+        "r2dbc.datasources.default.url" to MySqlDbUtils.mySqlDbUri.replace("jdbc", "r2dbc"),
+        "r2dbc.datasources.default.username" to MySqlDbUtils.mySqlDbUsername,
+        "r2dbc.datasources.default.password" to MySqlDbUtils.mySqlDbPassword
+    )
+    val context = ApplicationContext.run(map)
 
+    val underTest = context.getBean(QuakeSqlRepository::class.java)
+
+    val fwConfiguration = ClassicConfiguration()
+    fwConfiguration.setDataSource(
+        MySqlDbUtils.mySqlDbUri,
+        MySqlDbUtils.mySqlDbUsername,
+        MySqlDbUtils.mySqlDbPassword
+    )
+    fwConfiguration.setLocations(
+        Location("filesystem:/home/yazid/development/earthquake-micronaut/src/test/resources/db/migration")
+    )
+
+    val flyway = Flyway(fwConfiguration)
+    flyway.migrate()
+
+    beforeSpec {
     }
 
     afterSpec{
+//        MySqlDbUtils.closeMySqlDb()
+    }
+
+    afterEach {
         underTest.deleteAll()
     }
 
     val logger = LoggerFactory.getLogger(this::class.java)
+
+    test("should successfully start") {
+        Assertions.assertTrue(context.isRunning)
+    }
+
+    test("list all should work") {
+
+        val result = underTest.findAll()
+        Assertions.assertTrue(result.isEmpty())
+    }
 
     test("create and delete quake should work") {
 
         val quakepojo1 = Quake(latitude = 3.3, longitude = 101.1, magnitude = 5.7, quakeid = "hga123434",
             quaketime = "2022-07-25T14:44:47.267000", title = "Quake Item in Test Western Sahare")
 
-        val result = underTest.create(quakepojo1)
+        val result = underTest.create(quakepojo1)!!
 
         Assertions.assertEquals(quakepojo1.quakeid, result.quakeid)
         Assertions.assertNotNull(result.id)
@@ -81,4 +118,10 @@ class QuakeSqlRepositoryTest(
 
         Assertions.assertEquals(2, result.size)
     }
-})
+}), TestPropertyProvider {
+
+    override fun getProperties(): MutableMap<String, String> {
+        MySqlDbUtils.startMySqlDb()
+        return mutableMapOf()
+    }
+}

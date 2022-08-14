@@ -86,6 +86,6 @@ class QuakeRepositoryTest(
 
     override fun getProperties(): MutableMap<String, String> {
         MongoDbUtils.startMongoDb()
-        return mutableMapOf("mongodb.uri" to mongoDbUri)
+        return mutableMapOf()
     }
 }
