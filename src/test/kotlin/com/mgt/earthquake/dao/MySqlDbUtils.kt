@@ -4,6 +4,8 @@ import io.r2dbc.spi.ConnectionFactoryOptions
 import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.containers.MySQLR2DBCDatabaseContainer
 import org.testcontainers.utility.DockerImageName
+import java.time.Duration
+import java.time.temporal.ChronoUnit
 
 object MySqlDbUtils {
 
@@ -14,6 +16,7 @@ object MySqlDbUtils {
             .withUsername("test")
             .withPassword("test")
             .withReuse(true)
+            .withStartupTimeout(Duration.of(5, ChronoUnit.MINUTES) )
 
     var mySqlR2DBCContainer = MySQLR2DBCDatabaseContainer(mySqlDBContainer)
 
