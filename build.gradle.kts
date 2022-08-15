@@ -42,6 +42,9 @@ dependencies {
     implementation("io.micronaut:micronaut-jackson-databind")
     implementation("io.micronaut:micronaut-http-client")
 
+//    implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
+    implementation("io.micronaut.mongodb:micronaut-mongo-reactive")
+//    implementation("io.micronaut.r2dbc:micronaut-r2dbc-core")
     implementation("io.micronaut.flyway:micronaut-flyway")
     implementation("io.micronaut.data:micronaut-data-r2dbc")
     implementation("io.micronaut.sql:micronaut-hibernate-jpa")
@@ -60,7 +63,7 @@ dependencies {
 
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
     runtimeOnly("ch.qos.logback:logback-classic")
-    runtimeOnly("org.mongodb:mongodb-driver-reactivestreams")
+//    runtimeOnly("org.mongodb:mongodb-driver-reactivestreams")
 
     runtimeOnly("com.h2database:h2")
     runtimeOnly("io.r2dbc:r2dbc-h2")
