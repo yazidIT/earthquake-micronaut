@@ -9,7 +9,7 @@ datasources:
     driverClassName: org.h2.Driver
 r2dbc:
   datasources:
-    default:
+    rx-quake:
       url: r2dbc:h2:mem:///devDb;DATABASE_TO_UPPER=FALSE;DB_CLOSE_ON_EXIT=FALSE
       schema-generate: NONE
       dialect: H2

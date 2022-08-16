@@ -36,7 +36,7 @@ repositories {
 dependencies {
     kapt("io.micronaut:micronaut-http-validation")
     kapt("io.micronaut.data:micronaut-data-document-processor")
-    kapt("io.micronaut.data:micronaut-data-processor")
+//    kapt("io.micronaut.data:micronaut-data-processor")
 
     implementation("jakarta.annotation:jakarta.annotation-api")
     implementation("io.micronaut:micronaut-jackson-databind")
@@ -44,11 +44,11 @@ dependencies {
 
 //    implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
     implementation("io.micronaut.mongodb:micronaut-mongo-reactive")
-//    implementation("io.micronaut.r2dbc:micronaut-r2dbc-core")
+    implementation("io.micronaut.r2dbc:micronaut-r2dbc-core")
     implementation("io.micronaut.flyway:micronaut-flyway")
     implementation("io.micronaut.data:micronaut-data-r2dbc")
-    implementation("io.micronaut.sql:micronaut-hibernate-jpa")
-    implementation("io.micronaut.sql:micronaut-jdbc-hikari")
+//    implementation("io.micronaut.sql:micronaut-hibernate-jpa")
+    runtimeOnly("io.micronaut.sql:micronaut-jdbc-hikari")
     implementation("io.micronaut.sql:micronaut-jooq")
     implementation("io.micronaut.data:micronaut-data-mongodb")
 

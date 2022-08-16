@@ -7,7 +7,6 @@ import io.micronaut.data.r2dbc.annotation.R2dbcRepository
 import io.micronaut.transaction.annotation.ReadOnly
 import io.micronaut.transaction.annotation.TransactionalAdvice
 import jakarta.inject.Named
-import org.jooq.Configuration
 import org.jooq.DSLContext
 import org.jooq.impl.DSL.row
 import org.slf4j.LoggerFactory
@@ -15,8 +14,8 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import javax.transaction.Transactional
 
-@R2dbcRepository(value = "default")
-@TransactionalAdvice("default")
+@R2dbcRepository(value = "rx-quake")
+@TransactionalAdvice("rx-quake")
 class QuakeSqlRepository (
     @Named("R2dbcJooqDslContext") private val dslContext: DSLContext,
 ) {

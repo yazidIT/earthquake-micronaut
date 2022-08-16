@@ -14,9 +14,9 @@ import org.slf4j.LoggerFactory
 class QuakeSqlRepositoryTest: FunSpec({
 
     val map = mutableMapOf<String, Any>(
-        "r2dbc.datasources.default.url" to MySqlDbUtils.mySqlDbUri.replace("jdbc", "r2dbc"),
-        "r2dbc.datasources.default.username" to MySqlDbUtils.mySqlDbUsername,
-        "r2dbc.datasources.default.password" to MySqlDbUtils.mySqlDbPassword
+        "r2dbc.datasources.rx-quake.url" to MySqlDbUtils.mySqlDbUri.replace("jdbc", "r2dbc"),
+        "r2dbc.datasources.rx-quake.username" to MySqlDbUtils.mySqlDbUsername,
+        "r2dbc.datasources.rx-quake.password" to MySqlDbUtils.mySqlDbPassword
     )
     val context = ApplicationContext.run(map)
 
@@ -26,7 +26,6 @@ class QuakeSqlRepositoryTest: FunSpec({
     }
 
     afterSpec{
-//        MySqlDbUtils.closeMySqlDb()
     }
 
     afterEach {

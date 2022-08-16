@@ -8,7 +8,7 @@ mongodb:
 #    password: test
 r2dbc:
   datasources:
-    default:
+    rx-quake:
       url: r2dbc:tc:mysql:///test?TC_IMAGE_TAG=8
       username: test
       password: test

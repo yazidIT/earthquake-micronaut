@@ -36,11 +36,7 @@ object MySqlDbUtils {
         }
 
         val fwConfiguration = ClassicConfiguration()
-        fwConfiguration.setDataSource(
-            MySqlDbUtils.mySqlDbUri,
-            MySqlDbUtils.mySqlDbUsername,
-            MySqlDbUtils.mySqlDbPassword
-        )
+        fwConfiguration.setDataSource(mySqlDbUri, mySqlDbUsername, mySqlDbPassword)
         fwConfiguration.setLocations(
             Location("filesystem:/home/yazid/development/earthquake-micronaut/src/test/resources/db/migration")
         )
