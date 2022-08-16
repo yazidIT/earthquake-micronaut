@@ -11,9 +11,7 @@ import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory
 
 
-class QuakeSqlRepositoryTest(
-
-) : FunSpec({
+class QuakeSqlRepositoryTest: FunSpec({
 
     val map = mutableMapOf<String, Any>(
         "r2dbc.datasources.default.url" to MySqlDbUtils.mySqlDbUri.replace("jdbc", "r2dbc"),
@@ -23,19 +21,6 @@ class QuakeSqlRepositoryTest(
     val context = ApplicationContext.run(map)
 
     val underTest = context.getBean(QuakeSqlRepository::class.java)
-
-    val fwConfiguration = ClassicConfiguration()
-    fwConfiguration.setDataSource(
-        MySqlDbUtils.mySqlDbUri,
-        MySqlDbUtils.mySqlDbUsername,
-        MySqlDbUtils.mySqlDbPassword
-    )
-    fwConfiguration.setLocations(
-        Location("filesystem:/home/yazid/development/earthquake-micronaut/src/test/resources/db/migration")
-    )
-
-    val flyway = Flyway(fwConfiguration)
-    flyway.migrate()
 
     beforeSpec {
     }

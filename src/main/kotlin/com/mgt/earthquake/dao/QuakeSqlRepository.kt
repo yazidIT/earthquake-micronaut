@@ -9,6 +9,7 @@ import io.micronaut.transaction.annotation.TransactionalAdvice
 import jakarta.inject.Named
 import org.jooq.Configuration
 import org.jooq.DSLContext
+import org.jooq.impl.DSL.row
 import org.slf4j.LoggerFactory
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -18,7 +19,6 @@ import javax.transaction.Transactional
 @TransactionalAdvice("default")
 class QuakeSqlRepository (
     @Named("R2dbcJooqDslContext") private val dslContext: DSLContext,
-    @Named("CustomJooqConfig") private val configuration: Configuration,
 ) {
 
     private val logger = LoggerFactory.getLogger(this::class.java)
@@ -59,30 +59,46 @@ class QuakeSqlRepository (
     @Transactional
     fun create(quakePojo: Quake): QuakeRecord? {
 
-        val createdquake = dslContext.newRecord(QUAKE)
-        createdquake.from(quakePojo)
-
-        val result = Mono.from(
-            dslContext.insertInto(QUAKE)
-                .set(createdquake)
-                .returningResult(QUAKE.ID))
-            .block()
-
-        return createdquake.apply { id = result!!.value1() }
+        with(QUAKE) {
+            return Mono.from(
+                dslContext.insertInto(this, LATITUDE, LONGITUDE, MAGNITUDE, QUAKEID, QUAKETIME, TITLE)
+                    .values(quakePojo.latitude, quakePojo.longitude, quakePojo.magnitude,
+                        quakePojo.quakeid, quakePojo.quaketime, quakePojo.title)
+                    .returningResult(QUAKE.ID))
+                .flatMap{
+                    Mono.from(
+                        dslContext.selectFrom(this)
+                            .where(ID.eq(it[ID]))
+                    )
+                }
+                .block()
+        }
     }
 
+
     @Transactional
-    fun update(quakePojo: Quake) {
+    fun update(quakePojo: Quake): QuakeRecord? {
 
-        val createdquake = dslContext.newRecord(QUAKE)
-        createdquake.from(quakePojo)
-
-        Mono.from(
-            dslContext.update(QUAKE)
-                .set(createdquake)
-                .where(QUAKE.ID.eq(quakePojo.id))
-                .returningResult(QUAKE.ID))
-            .block()
+        with(QUAKE) {
+            return Mono.from(
+                dslContext.update(QUAKE)
+                    .set(
+                        row(LATITUDE, LONGITUDE, MAGNITUDE, QUAKEID, QUAKETIME, TITLE),
+                        row(
+                            quakePojo.latitude, quakePojo.longitude, quakePojo.magnitude,
+                            quakePojo.quakeid, quakePojo.quaketime, quakePojo.title
+                        )
+                    )
+                    .where(ID.eq(quakePojo.id))
+                    .returningResult(ID))
+                .flatMap {
+                    Mono.from(
+                        dslContext.selectFrom(this)
+                            .where(ID.eq(it[ID]))
+                    )
+                }
+                .block()
+        }
     }
 
 

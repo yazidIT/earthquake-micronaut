@@ -11,17 +11,17 @@ import org.jooq.impl.DSL
 
 @Factory
 class JooqFactory(
-    private val jooqConfig: Configuration,
+//    private val jooqConfig: Configuration,
     private val r2dbcConfiguration: R2dbcConfiguration
 ) {
 
-    @Bean
-    @Named("CustomJooqConfig")
-    fun jooqConfiguration() : Configuration {
-
-//        jooqConfig.set(DefaultRecordListenerProvider(insertListener))
-        return jooqConfig
-    }
+//    @Bean
+//    @Named("CustomJooqConfig")
+//    fun jooqConfiguration() : Configuration {
+//
+////        jooqConfig.set(DefaultRecordListenerProvider(insertListener))
+//        return jooqConfig
+//    }
 
     @Bean
     @Named("R2dbcJooqDslContext")

@@ -1,6 +1,9 @@
 package com.mgt.earthquake.dao
 
 import io.r2dbc.spi.ConnectionFactoryOptions
+import org.flywaydb.core.Flyway
+import org.flywaydb.core.api.Location
+import org.flywaydb.core.api.configuration.ClassicConfiguration
 import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.containers.MySQLR2DBCDatabaseContainer
 import org.testcontainers.utility.DockerImageName
@@ -31,6 +34,19 @@ object MySqlDbUtils {
 
             mySqlR2DBCContainer.start()
         }
+
+        val fwConfiguration = ClassicConfiguration()
+        fwConfiguration.setDataSource(
+            MySqlDbUtils.mySqlDbUri,
+            MySqlDbUtils.mySqlDbUsername,
+            MySqlDbUtils.mySqlDbPassword
+        )
+        fwConfiguration.setLocations(
+            Location("filesystem:/home/yazid/development/earthquake-micronaut/src/test/resources/db/migration")
+        )
+
+        val flyway = Flyway(fwConfiguration)
+        flyway.migrate()
     }
 
     val mySqlDbUri: String
