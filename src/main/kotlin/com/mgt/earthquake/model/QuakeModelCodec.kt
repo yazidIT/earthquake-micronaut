@@ -14,11 +14,10 @@ data class QuakeModelCodec(
     private val codecRegistry: CodecRegistry
 ): Codec<QuakeModel> {
 
+    private val documentCodec = codecRegistry.get(Document::class.java)
     override fun encode(writer: BsonWriter?, value: QuakeModel?, encoderContext: EncoderContext?) {
-        val documentCodec = codecRegistry.get(Document::class.java)
         val document = Document()
-        document["id"] = value!!.id
-        document["title"] = value.title
+        document["title"] = value!!.title
         document["magnitude"] = value.magnitude
         document["latitude"] = value.latitude
         document["longitude"] = value.longitude
@@ -33,7 +32,6 @@ data class QuakeModelCodec(
 
     override fun decode(reader: BsonReader?, decoderContext: DecoderContext?): QuakeModel {
 
-        val documentCodec = codecRegistry.get(Document::class.java)
         val document = documentCodec.decode(reader, decoderContext)
 
         return QuakeModel(
