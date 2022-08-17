@@ -1,38 +1,38 @@
 package com.mgt.earthquake.model
 
-import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonProperty
 import io.micronaut.data.annotation.GeneratedValue
 import io.micronaut.data.annotation.Id
 import io.micronaut.data.annotation.MappedEntity
 import io.micronaut.serde.annotation.Serdeable
+import org.bson.codecs.pojo.annotations.BsonCreator
+import org.bson.codecs.pojo.annotations.BsonProperty
 import org.bson.types.ObjectId
 
 
 @Serdeable
 @MappedEntity(value = "quake")
-data class QuakeModel @JsonCreator constructor(
+data class QuakeModel @BsonCreator constructor(
 
     @field:Id
-    @param:JsonProperty("id")
+    @param:BsonProperty("id")
     @GeneratedValue
     var id: ObjectId? = null,
 
-    @param:JsonProperty("title")
+    @param:BsonProperty("title")
     var title: String,
 
-    @param:JsonProperty("magnitude")
+    @param:BsonProperty("magnitude")
     var magnitude: Double,
 
-    @param:JsonProperty("quaketime")
+    @param:BsonProperty("quaketime")
     var quaketime: String,
 
-    @param:JsonProperty("latitude")
+    @param:BsonProperty("latitude")
     var latitude: Double,
 
-    @param:JsonProperty("longitude")
+    @param:BsonProperty("longitude")
     var longitude: Double,
 
-    @param:JsonProperty("quakeid")
+    @param:BsonProperty("quakeid")
     var quakeid: String
 )

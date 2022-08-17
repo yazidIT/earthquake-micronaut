@@ -24,11 +24,11 @@ class QuakeRepositoryTest(
     }
 
     afterSpec {
-//        MongoDbUtils.closeMongoDb()
+        MongoDbUtils.closeMongoDb()
     }
 
     afterEach {
-//        underTest.deleteAll()
+        underTest.deleteAll()
     }
 
     test("should return empty") {
