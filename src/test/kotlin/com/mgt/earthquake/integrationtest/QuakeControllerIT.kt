@@ -64,6 +64,9 @@ class QuakeControllerIT(
         Assertions.assertEquals(HttpStatus.OK, httpresponse.status)
         Assertions.assertTrue(httpresponse.body.isPresent)
 
+        val responsedata = httpresponse.body()!!
+        logger.info("$responsedata")
+
         // Read data from mongodb
         val result = quakeRepo.findAll().toList()
 

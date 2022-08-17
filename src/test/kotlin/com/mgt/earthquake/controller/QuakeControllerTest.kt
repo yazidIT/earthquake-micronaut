@@ -40,7 +40,7 @@ class QuakeControllerTest(
         // given
         val quakedto = QuakeDTO(title = "Quake No 1", magnitude = 6.0, quaketime = "xxx",
             latitude = 3.1234, longitude = 103.3, quakeid = "fwiohfrwier1")
-        val quake = QuakeModel(id= ObjectId(), title = "Quake No 1", magnitude = 6.0, quaketime = "xxx",
+        val quake = QuakeModel(title = "Quake No 1", magnitude = 6.0, quaketime = "xxx",
             latitude = 3.1234, longitude = 103.3, quakeid = "fwiohfrwier1")
         val quakesql = QuakeRecord(id = 1234L, title = "Quake No 1", magnitude = 6.0, quaketime = "xxx",
             latitude = 3.1234, longitude = 103.3, quakeid = "fwiohfrwier1")
@@ -67,9 +67,9 @@ class QuakeControllerTest(
         val quakedto = QuakeDTO(title = "Quake No 1", magnitude = 6.0, quaketime = "xxx",
             latitude = 3.1234, longitude = 103.3, quakeid = "fwiohfrwier1")
         val quakelist = QuakeDTOList(listOf(quakedto))
-        val quake = QuakeModel(id= ObjectId(), title = "Quake No 1", magnitude = 6.0, quaketime = "xxx",
+        val quake = QuakeModel(title = "Quake No 1", magnitude = 6.0, quaketime = "xxx",
             latitude = 3.1234, longitude = 103.3, quakeid = "fwiohfrwier1")
-        val quake2 = QuakeModel(id= ObjectId(), title = "Quake No 2", magnitude = 6.5, quaketime = "xxxss",
+        val quake2 = QuakeModel(title = "Quake No 2", magnitude = 6.5, quaketime = "xxxss",
             latitude = 3.1234, longitude = 103.3, quakeid = "fwiohfdd1")
 
         // when

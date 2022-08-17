@@ -24,7 +24,6 @@ class QuakeServiceImpl (
     override suspend fun create(quakedto: QuakeDTO): QuakeModel {
 
         val quakeitem = QuakeModel(
-            id = ObjectId(),
             title = quakedto.title,
             magnitude = quakedto.magnitude,
             quaketime = quakedto.quaketime,
@@ -41,7 +40,6 @@ class QuakeServiceImpl (
         val createlist = quakeList
             .map {
                 QuakeModel(
-                    id = ObjectId(),
                     title = it.title,
                     magnitude = it.magnitude,
                     quaketime = it.quaketime,

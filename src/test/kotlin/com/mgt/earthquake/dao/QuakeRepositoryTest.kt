@@ -1,21 +1,13 @@
 package com.mgt.earthquake.dao
 
-import com.mgt.earthquake.model.QuakeModel
 import com.mgt.earthquake.dao.MongoDbUtils.mongoDbUri
+import com.mgt.earthquake.model.QuakeModel
 import io.kotest.core.spec.style.FunSpec
-import io.micronaut.configuration.mongo.core.CodecRegistryBuilder
 import io.micronaut.context.ApplicationContext
-import io.micronaut.test.extensions.kotest.annotation.MicronautTest
 import io.micronaut.test.support.TestPropertyProvider
-import jakarta.inject.Inject
 import kotlinx.coroutines.flow.toList
-import org.bson.UuidRepresentation
-import org.bson.codecs.UuidCodecProvider
-import org.bson.codecs.configuration.CodecRegistry
-import org.bson.internal.OverridableUuidRepresentationCodecRegistry
 import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory
-import org.testcontainers.junit.jupiter.Testcontainers
 
 class QuakeRepositoryTest(
 
@@ -32,11 +24,11 @@ class QuakeRepositoryTest(
     }
 
     afterSpec {
-        MongoDbUtils.closeMongoDb()
+//        MongoDbUtils.closeMongoDb()
     }
 
     afterEach {
-        underTest.deleteAll()
+//        underTest.deleteAll()
     }
 
     test("should return empty") {
@@ -64,6 +56,23 @@ class QuakeRepositoryTest(
         // then
         Assertions.assertNotNull(result2)
         Assertions.assertEquals(quake1.title, result2!!.title)
+    }
+
+    test("create Quake object, findByTitle & findByQuakeid - success") {
+
+        // given
+        val quake1 = QuakeModel(title = "Quake NE Japan", magnitude = 6.5, latitude = 3.1414,
+            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000hfxm")
+
+        underTest.save(quake1)
+        val result = underTest.findByTitle(quake1.title).toList()
+
+        // then
+        Assertions.assertTrue(result.isNotEmpty())
+        logger.info("$result")
+
+        val result2 = underTest.findByQuakeid(quake1.quakeid)
+        Assertions.assertNotNull(result2)
     }
 
     test("create Quake objects, and delete By Id - success") {

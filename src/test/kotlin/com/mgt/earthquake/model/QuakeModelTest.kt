@@ -19,6 +19,7 @@ class QuakeModelTest (
 
         val serResult = objectMapper.writeValueAsString(quake1)
         val desResult = objectMapper.readValue(serResult, QuakeModel::class.java)
+        println(serResult)
 
         // then
         Assertions.assertEquals(quake1.title, desResult.title)

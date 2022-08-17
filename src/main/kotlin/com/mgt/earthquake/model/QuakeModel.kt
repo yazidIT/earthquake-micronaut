@@ -14,6 +14,7 @@ import org.bson.types.ObjectId
 data class QuakeModel @JsonCreator constructor(
 
     @field:Id
+    @param:JsonProperty("id")
     @GeneratedValue
     var id: ObjectId? = null,
 
