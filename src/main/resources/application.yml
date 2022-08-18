@@ -2,6 +2,8 @@ micronaut:
   application:
     name: earthquakeMicronaut
 mongodb:
+  name: quakedb
+  collection: quake
   uri: mongodb://quake:quake@localhost:27017/quakedb
 datasources:
   default:

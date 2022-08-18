@@ -15,7 +15,10 @@ class QuakeRepositoryTest(
 
     val logger = LoggerFactory.getLogger(QuakeRepositoryTest::class.java)
 
-    val map = mutableMapOf<String, Any>("mongodb.uri" to mongoDbUri)
+    val map = mutableMapOf<String, Any>(
+        "mongodb.uri" to mongoDbUri,
+        "mongodb.name" to "test",
+    )
     val context = ApplicationContext.run(map)
 
     val underTest = context.getBean(QuakeRepository::class.java)
@@ -72,6 +75,44 @@ class QuakeRepositoryTest(
         logger.info("$result")
 
         val result2 = underTest.findByQuakeid(quake1.quakeid)
+        Assertions.assertNotNull(result2)
+    }
+
+    test("create Quake object with similar titles, findByTitle should return correct number") {
+
+        // given
+        val quake1 = QuakeModel(title = "Quake NE Japan", magnitude = 6.5, latitude = 3.1414,
+            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000hfxm")
+        val quake2 = QuakeModel(title = "Quake NE Japan", magnitude = 7.5, latitude = 8.1414,
+            longitude = 87.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6aa0hfxm")
+
+        underTest.saveAll(listOf(quake1, quake2)).toList()
+        val result = underTest.findByTitle(quake1.title).toList()
+
+        // then
+        Assertions.assertEquals(2, result.size)
+
+        val result2 = underTest.customFindByTitle(quake1.title).toList()
+
+        Assertions.assertEquals(2, result2.size)
+    }
+
+    test("create Quake objects, customfindById should work") {
+
+        // given
+        val quake1 = QuakeModel(title = "Quake NE Japan1", magnitude = 6.0, latitude = -4.1414,
+            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000hfxm")
+        val quake2 = QuakeModel(title = "Quake NE Japan2", magnitude = 7.5, latitude = 8.1414,
+            longitude = 87.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6aa0hllm")
+
+        underTest.saveAll(listOf(quake1, quake2)).toList()
+        val result = underTest.findAll().toList()
+
+        // then
+        Assertions.assertEquals(2, result.size)
+
+        val result2 = underTest.customFindById(result[0].id!!)
+
         Assertions.assertNotNull(result2)
     }
 
