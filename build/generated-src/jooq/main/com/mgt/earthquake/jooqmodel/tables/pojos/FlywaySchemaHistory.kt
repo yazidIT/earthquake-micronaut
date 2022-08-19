@@ -4,9 +4,6 @@
 package com.mgt.earthquake.jooqmodel.tables.pojos
 
 
-import java.io.Serializable
-import java.time.LocalDateTime
-
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -14,6 +11,9 @@ import javax.persistence.Index
 import javax.persistence.Table
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
+
+import java.io.Serializable
+import java.time.LocalDateTime
 
 
 /**
@@ -54,6 +54,7 @@ data class FlywaySchemaHistory(
     @get:Size(max = 100)
     var installedBy: String? = null,
     @get:Column(name = "installed_on", nullable = false)
+    @get:NotNull
     var installedOn: LocalDateTime? = null,
     @get:Column(name = "execution_time", nullable = false, precision = 10)
     @get:NotNull

@@ -83,6 +83,7 @@ open class FlywaySchemaHistoryRecord() : UpdatableRecordImpl<FlywaySchemaHistory
         get(): String? = get(6) as String?
 
     @get:Column(name = "installed_on", nullable = false)
+    @get:NotNull
     var installedOn: LocalDateTime?
         set(value): Unit = set(7, value)
         get(): LocalDateTime? = get(7) as LocalDateTime?

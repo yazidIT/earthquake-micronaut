@@ -101,7 +101,7 @@ open class FlywaySchemaHistory(
     /**
      * The column <code>flyway_schema_history.installed_on</code>.
      */
-    val INSTALLED_ON: TableField<FlywaySchemaHistoryRecord, LocalDateTime?> = createField(DSL.name("installed_on"), SQLDataType.LOCALDATETIME(0).nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", SQLDataType.LOCALDATETIME)), this, "")
+    val INSTALLED_ON: TableField<FlywaySchemaHistoryRecord, LocalDateTime?> = createField(DSL.name("installed_on"), SQLDataType.LOCALDATETIME(0).nullable(false), this, "")
 
     /**
      * The column <code>flyway_schema_history.execution_time</code>.
