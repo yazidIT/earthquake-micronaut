@@ -36,9 +36,11 @@ repositories {
 dependencies {
     kapt("io.micronaut:micronaut-http-validation")
     kapt("io.micronaut.data:micronaut-data-document-processor")
+    kapt("io.micronaut.serde:micronaut-serde-processor")
 
+    implementation("io.micronaut.serde:micronaut-serde-bson")
     implementation("jakarta.annotation:jakarta.annotation-api")
-    implementation("io.micronaut:micronaut-jackson-databind")
+//    implementation("io.micronaut:micronaut-jackson-databind")
     implementation("io.micronaut:micronaut-http-client")
 
     implementation("io.micronaut.mongodb:micronaut-mongo-reactive")
@@ -174,3 +176,12 @@ jooq {
 }
 
 tasks.named<JooqGenerate>("generateJooq") { allInputsDeclared.set(true) }
+
+configurations.all {
+    resolutionStrategy.dependencySubstitution {
+        substitute(module("io.micronaut:micronaut-jackson-databind"))
+            .using(module("io.micronaut.serde:micronaut-serde-bson:1.3.0"))
+        substitute(module("io.micronaut:micronaut-jackson-core"))
+            .using(module("io.micronaut.serde:micronaut-serde-bson:1.3.0"))
+    }
+}

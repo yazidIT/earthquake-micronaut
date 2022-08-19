@@ -1,36 +1,36 @@
 package com.mgt.earthquake.model
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import io.micronaut.serde.annotation.Serdeable
+import org.bson.codecs.pojo.annotations.BsonProperty
 
 @Serdeable
 data class QuakeResponse (
-    @param:JsonProperty("features")
+    @param:BsonProperty("features")
     val features: List<QuakeResponseFeature>
 )
 
 @Serdeable
 data class QuakeResponseFeature (
-    @param:JsonProperty("id")
+    @param:BsonProperty("id")
     val id: String,
-    @param:JsonProperty("properties")
+    @param:BsonProperty("properties")
     val properties: QuakeProperty,
-    @param:JsonProperty("geometry")
+    @param:BsonProperty("geometry")
     val geometry: QuakeGeometry
 )
 
 @Serdeable
 data class QuakeProperty(
-    @param:JsonProperty("time")
+    @param:BsonProperty("time")
     val time: Long,
-    @param:JsonProperty("title")
+    @param:BsonProperty("title")
     val title: String,
-    @param:JsonProperty("mag")
+    @param:BsonProperty("mag")
     val mag: Double
 )
 
 @Serdeable
 data class QuakeGeometry(
-    @param:JsonProperty("coordinates")
+    @param:BsonProperty("coordinates")
     val coordinates: ArrayList<Double>
 )

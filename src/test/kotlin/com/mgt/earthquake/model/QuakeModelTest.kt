@@ -1,7 +1,7 @@
 package com.mgt.earthquake.model
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.kotest.core.spec.style.FunSpec
+import io.micronaut.serde.ObjectMapper
 import io.micronaut.test.extensions.kotest.annotation.MicronautTest
 import org.junit.jupiter.api.Assertions
 
