@@ -6,15 +6,15 @@ package com.mgt.earthquake.jooqmodel.tables.records
 
 import com.mgt.earthquake.jooqmodel.tables.FlywaySchemaHistory
 
-import java.time.LocalDateTime
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.Index
+import jakarta.persistence.Table
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Size
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.Index
-import javax.persistence.Table
-import javax.validation.constraints.NotNull
-import javax.validation.constraints.Size
+import java.time.LocalDateTime
 
 import org.jooq.Field
 import org.jooq.Record1

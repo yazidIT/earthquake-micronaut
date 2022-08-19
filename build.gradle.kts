@@ -40,6 +40,8 @@ dependencies {
 
     implementation("io.micronaut.serde:micronaut-serde-bson")
     implementation("jakarta.annotation:jakarta.annotation-api")
+    implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
+    implementation("jakarta.validation:jakarta.validation-api:3.0.2")
 //    implementation("io.micronaut:micronaut-jackson-databind")
     implementation("io.micronaut:micronaut-http-client")
 
