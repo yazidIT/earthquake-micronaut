@@ -2,16 +2,20 @@ package com.mgt.earthquake.controller
 
 import com.mgt.earthquake.model.QuakeDTO
 import com.mgt.earthquake.model.QuakeDTOList
+import com.mgt.earthquake.model.QuakeModel
 import com.mgt.earthquake.model.QuakeResponse
 import com.mgt.earthquake.service.QuakeService
 import com.mgt.earthquake.service.QuakeSqlService
+import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.PathVariable
 import io.micronaut.http.annotation.Post
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withContext
 
 @Controller
@@ -46,4 +50,14 @@ class QuakeController (
     @Get(value = "/quake/latest")
     fun latestQuake(): Flow<QuakeResponse> = quakeService.latestQuake().flowOn(ioDispatcher)
 
+    @Get(value = "/quake/list/json/{number}", produces = [MediaType.APPLICATION_JSON_STREAM])
+    fun latestListJsonByNumber(@PathVariable number: Int): Flow<QuakeModel> =
+
+        quakeService.latestNumberOfQuake(number).flowOn(ioDispatcher)
+
+
+    @Get(value = "/quake/list/{number}")
+    suspend fun latestListByNumber(@PathVariable number: Int): List<QuakeModel> =
+
+        quakeService.latestNumberOfQuake(number).flowOn(Dispatchers.IO).toList()
 }

@@ -7,18 +7,22 @@ import com.mgt.earthquake.service.QuakeServiceImpl
 import com.mgt.earthquake.service.QuakeSqlService
 import com.mgt.earthquake.service.QuakeSqlServiceImpl
 import io.kotest.core.spec.style.FunSpec
+import io.micronaut.core.type.Argument
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.HttpClient
+import io.micronaut.http.client.StreamingHttpClient
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.annotation.MockBean
+import io.micronaut.test.extensions.kotest.MicronautKotestExtension.getMock
 import io.micronaut.test.extensions.kotest.annotation.MicronautTest
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.just
 import io.mockk.mockk
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOf
-import org.bson.types.ObjectId
+import kotlinx.coroutines.reactive.asFlow
 import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory
 
@@ -27,6 +31,9 @@ class QuakeControllerTest(
 
     @Client("/")
     val httpClient: HttpClient,
+
+    @Client("/")
+    val streamClient: StreamingHttpClient,
 
     val quakeService: QuakeService,
     val quakeSqlService: QuakeSqlService
@@ -73,7 +80,7 @@ class QuakeControllerTest(
             latitude = 3.1234, longitude = 103.3, quakeid = "fwiohfdd1")
 
         // when
-        coEvery { quakeService.createList(any()) } returns listOf(quake, quake2)
+        coEvery { quakeService.createList(any()) } returns flowOf(quake, quake2)
         coEvery { quakeSqlService.createList(any()) } just Runs
 
         val request = HttpRequest.POST<Any>("/quake/addlist", quakelist)
@@ -109,6 +116,62 @@ class QuakeControllerTest(
 
         val data = httpresponse.body.get()
         logger.info("$data")
+    }
+
+    test("GET /quake/list/json/{number} should complete successfully") {
+
+        getMock(quakeService)
+        // given
+        val quake1 = QuakeModel(title = "Quake NE Japan1", magnitude = 6.5, latitude = 3.1414,
+            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000hfxm")
+        val quake2 = QuakeModel(title = "Quake NE Japan2", magnitude = 6.9, latitude = 5.73455,
+            longitude = 90.232323, quaketime = "2022-05-22T06:15:23.756000", quakeid = "us6000hfjk")
+        val quake3 = QuakeModel(title = "Quake NE Japan3", magnitude = 6.5, latitude = 3.1414,
+            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000hfxn")
+        val quake4 = QuakeModel(title = "Quake NE Japan4", magnitude = 6.9, latitude = 5.73455,
+            longitude = 90.232323, quaketime = "2022-05-22T06:15:23.756000", quakeid = "us6000hfjl")
+        val number = 4
+
+        // when
+        coEvery { quakeService.latestNumberOfQuake(any()) } returns flowOf(quake1, quake2, quake3, quake4)
+
+        val request = HttpRequest.GET<String>("/quake/list/json/$number")
+
+        var count = 0
+        streamClient.jsonStream(request, Argument.of(QuakeModel::class.java)).asFlow()
+            .collect {
+                logger.info("$it")
+                count += 1
+            }
+
+        // then
+        Assertions.assertEquals(4, count)
+    }
+
+
+    test("GET /quake/list/{number} should complete successfully") {
+
+        getMock(quakeService)
+        // given
+        val quake1 = QuakeModel(title = "Quake NE Japan1", magnitude = 6.5, latitude = 3.1414,
+            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000hfxm")
+        val quake2 = QuakeModel(title = "Quake NE Japan2", magnitude = 6.9, latitude = 5.73455,
+            longitude = 90.232323, quaketime = "2022-05-22T06:15:23.756000", quakeid = "us6000hfjk")
+        val quake3 = QuakeModel(title = "Quake NE Japan3", magnitude = 6.5, latitude = 3.1414,
+            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000hfxn")
+        val quake4 = QuakeModel(title = "Quake NE Japan4", magnitude = 6.9, latitude = 5.73455,
+            longitude = 90.232323, quaketime = "2022-05-22T06:15:23.756000", quakeid = "us6000hfjl")
+        val number = 4
+
+        // when
+        coEvery { quakeService.latestNumberOfQuake(any()) } returns flowOf(quake1, quake2, quake3, quake4)
+
+        val request = HttpRequest.GET<String>("/quake/list/$number")
+        val httpresponse = httpClient.toBlocking().exchange(request, Argument.listOf(QuakeModel::class.java))
+
+        // then
+        Assertions.assertEquals(4, httpresponse.body()!!.size)
+        logger.info("${httpresponse.body()}")
     }
 
 }) {

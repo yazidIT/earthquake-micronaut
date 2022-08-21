@@ -7,4 +7,5 @@ import io.micronaut.core.naming.Named
 interface MongoDbConfiguration : Named {
 
     val collection: String
+    val uri: String
 }
