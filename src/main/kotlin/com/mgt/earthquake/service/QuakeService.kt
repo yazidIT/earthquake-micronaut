@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface QuakeService {
     suspend fun create(quakedto: QuakeDTO): QuakeModel
-    suspend fun createList(quakeList: List<QuakeDTO>): List<QuakeModel>
+    fun createList(quakeList: List<QuakeDTO>): Flow<QuakeModel>
     fun latestQuake(): Flow<QuakeResponse>
+    fun latestNumberOfQuake(number: Int): Flow<QuakeModel>
 }

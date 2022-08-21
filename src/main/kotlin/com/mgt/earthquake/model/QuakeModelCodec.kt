@@ -1,5 +1,6 @@
 package com.mgt.earthquake.model
 
+import com.mongodb.reactivestreams.client.MongoClients
 import jakarta.inject.Singleton
 import org.bson.BsonReader
 import org.bson.BsonWriter
@@ -7,14 +8,11 @@ import org.bson.Document
 import org.bson.codecs.Codec
 import org.bson.codecs.DecoderContext
 import org.bson.codecs.EncoderContext
-import org.bson.codecs.configuration.CodecRegistry
 
 @Singleton
-data class QuakeModelCodec(
-    private val codecRegistry: CodecRegistry
-): Codec<QuakeModel> {
+class QuakeModelCodec: Codec<QuakeModel> {
 
-    private val documentCodec = codecRegistry.get(Document::class.java)
+    private val documentCodec = MongoClients.getDefaultCodecRegistry().get(Document::class.java)
     override fun encode(writer: BsonWriter?, value: QuakeModel?, encoderContext: EncoderContext?) {
         val document = Document()
         document["title"] = value!!.title

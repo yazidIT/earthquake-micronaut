@@ -138,6 +138,32 @@ class QuakeRepositoryTest(
         Assertions.assertEquals(result[1].id, result2[0].id)
     }
 
+    test("create Quake objects, and get list of latest should return correct object") {
+
+        // given
+        val quake1 = QuakeModel(title = "Quake NE Japan1", magnitude = 6.5, latitude = 3.1414,
+            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000hfxm")
+        val quake2 = QuakeModel(title = "Quake NE Japan2", magnitude = 6.9, latitude = 5.73455,
+            longitude = 90.232323, quaketime = "2022-05-22T06:15:23.756000", quakeid = "us6000hfjk")
+        val quake3 = QuakeModel(title = "Quake NE Japan3", magnitude = 6.5, latitude = 3.1414,
+            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000hfxn")
+        val quake4 = QuakeModel(title = "Quake NE Japan4", magnitude = 6.9, latitude = 5.73455,
+            longitude = 90.232323, quaketime = "2022-05-22T06:15:23.756000", quakeid = "us6000hfjl")
+
+        underTest.saveAll(listOf(quake1, quake2, quake3, quake4)).toList()
+        val result = underTest.findLatestNumber(2).toList()
+
+        // then
+        Assertions.assertEquals(2, result.size)
+        logger.info("$result")
+
+        val finalcount = result.filter { it.quakeid == "us6000hfxn" || it.quakeid == "us6000hfjl" }
+            .map { logger.info("$it") }
+            .count()
+
+        Assertions.assertEquals(2, finalcount)
+    }
+
 }), TestPropertyProvider {
 
     override fun getProperties(): MutableMap<String, String> {

@@ -35,7 +35,7 @@ class QuakeServiceImpl (
         return quakeRepo.save(quakeitem)
     }
 
-    override suspend fun createList(quakeList: List<QuakeDTO>): List<QuakeModel> {
+    override fun createList(quakeList: List<QuakeDTO>): Flow<QuakeModel> {
 
         val createlist = quakeList
             .map {
@@ -49,7 +49,7 @@ class QuakeServiceImpl (
                 )
             }
 
-        return quakeRepo.saveAll(createlist).toList()
+        return quakeRepo.saveAll(createlist)
     }
 
     override fun latestQuake(): Flow<QuakeResponse> =
@@ -57,6 +57,8 @@ class QuakeServiceImpl (
         quakeClient.getTopEarthquakeForToday(
             "geojson", 100, 5.0, 10.0,
             yesterdayDateZeroHundredHoursIso(), yesterdayDateTwentyThreeHundredHoursIso(), "time-asc")
+
+    override fun latestNumberOfQuake(number: Int): Flow<QuakeModel> = quakeRepo.findLatestNumber(number)
 
 
     /***

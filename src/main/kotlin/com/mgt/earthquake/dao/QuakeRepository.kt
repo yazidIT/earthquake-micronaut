@@ -1,6 +1,7 @@
 package com.mgt.earthquake.dao
 
 import com.mgt.earthquake.model.QuakeModel
+import com.mongodb.BasicDBObject
 import com.mongodb.client.model.Filters.eq
 import com.mongodb.reactivestreams.client.MongoClient
 import com.mongodb.reactivestreams.client.MongoCollection
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import org.bson.types.ObjectId
+
 
 @MongoRepository
 abstract class QuakeRepository(
@@ -33,4 +35,8 @@ abstract class QuakeRepository(
     suspend fun customFindById(id: ObjectId): QuakeModel? =
 
         collection.find(eq("_id", id)).awaitFirstOrNull()
+
+    fun findLatestNumber(number: Int): Flow<QuakeModel> =
+
+        collection.find().sort(BasicDBObject("_id", -1)).limit(number).asFlow()
 }
