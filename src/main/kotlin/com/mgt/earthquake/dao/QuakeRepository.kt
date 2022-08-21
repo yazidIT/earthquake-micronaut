@@ -6,6 +6,7 @@ import com.mongodb.reactivestreams.client.MongoClient
 import com.mongodb.reactivestreams.client.MongoCollection
 import io.micronaut.data.mongodb.annotation.MongoRepository
 import io.micronaut.data.repository.kotlin.CoroutineCrudRepository
+import jakarta.inject.Named
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactive.awaitFirstOrNull
@@ -13,7 +14,7 @@ import org.bson.types.ObjectId
 
 @MongoRepository
 abstract class QuakeRepository(
-    private val mongoClient: MongoClient,
+    @Named("earthquake") private val mongoClient: MongoClient,
     private val mongoConf: MongoDbConfiguration
 ) : CoroutineCrudRepository<QuakeModel, ObjectId> {
 
