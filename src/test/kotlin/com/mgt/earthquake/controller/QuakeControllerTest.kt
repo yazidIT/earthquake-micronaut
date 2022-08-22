@@ -58,7 +58,7 @@ class QuakeControllerTest(
 
         val request = HttpRequest.POST<Any>("/quake/add", quakedto)
 
-        val httpresponse = httpClient.toBlocking().exchange(request, QuakeModel::class.java)
+        val httpresponse = httpClient.toBlocking().exchange(request, Argument.of(QuakeModel::class.java))
 
         // then
         Assertions.assertEquals(HttpStatus.OK, httpresponse.status)

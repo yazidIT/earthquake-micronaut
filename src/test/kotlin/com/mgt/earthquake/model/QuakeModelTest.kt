@@ -3,6 +3,7 @@ package com.mgt.earthquake.model
 import io.kotest.core.spec.style.FunSpec
 import io.micronaut.serde.ObjectMapper
 import io.micronaut.test.extensions.kotest.annotation.MicronautTest
+import org.bson.codecs.pojo.ClassModel
 import org.junit.jupiter.api.Assertions
 
 @MicronautTest
@@ -22,8 +23,14 @@ class QuakeModelTest (
         println(serResult)
 
         // then
-        Assertions.assertEquals(quake1.title, desResult.title)
+        Assertions.assertEquals(quake1.title, desResult!!.title)
 
+    }
+
+    test("check classmodel") {
+        val classmodel = ClassModel.builder(QuakeModel::class.java).build()
+        println(classmodel.type)
+        println(classmodel.propertyModels)
     }
 
 })
