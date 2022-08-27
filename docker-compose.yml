@@ -14,14 +14,13 @@ services:
     ports:
       - "27017:27017"
   database1:
-    image: mysql:8
-    container_name: mysqldb
+    image: postgres:12
+    container_name: postgresdb
     environment:
-      MYSQL_ROOT_PASSWORD: 1234
-      MYSQL_DATABASE: quakedb
-      MYSQL_USER: dbuser
-      MYSQL_PASSWORD: dbuser
+      POSTGRES_DB: quakedb
+      POSTGRES_USER: dbuser
+      POSTGRES_PASSWORD: dbuser
     ports:
-      - "6033:3306"
+      - "5432:5432"
     volumes:
-      - ./data/sqldb:/var/lib/mysql
+      - ./data/postgresdb:/var/lib/postgresql/data

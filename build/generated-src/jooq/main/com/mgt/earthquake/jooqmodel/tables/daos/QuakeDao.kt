@@ -87,6 +87,11 @@ open class QuakeDao(configuration: Configuration?) : DAOImpl<QuakeRecord, com.mg
     fun fetchByQuakeid(vararg values: String): List<com.mgt.earthquake.jooqmodel.tables.pojos.Quake> = fetch(Quake.QUAKE.QUAKEID, *values)
 
     /**
+     * Fetch a unique record that has <code>quakeid = value</code>
+     */
+    fun fetchOneByQuakeid(value: String): com.mgt.earthquake.jooqmodel.tables.pojos.Quake? = fetchOne(Quake.QUAKE.QUAKEID, value)
+
+    /**
      * Fetch records that have <code>quaketime BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */

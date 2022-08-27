@@ -136,10 +136,10 @@ open class FlywaySchemaHistoryDao(configuration: Configuration?) : DAOImpl<Flywa
      * Fetch records that have <code>success BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */
-    fun fetchRangeOfSuccess(lowerInclusive: Byte?, upperInclusive: Byte?): List<com.mgt.earthquake.jooqmodel.tables.pojos.FlywaySchemaHistory> = fetchRange(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.SUCCESS, lowerInclusive, upperInclusive)
+    fun fetchRangeOfSuccess(lowerInclusive: Boolean?, upperInclusive: Boolean?): List<com.mgt.earthquake.jooqmodel.tables.pojos.FlywaySchemaHistory> = fetchRange(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.SUCCESS, lowerInclusive, upperInclusive)
 
     /**
      * Fetch records that have <code>success IN (values)</code>
      */
-    fun fetchBySuccess(vararg values: Byte): List<com.mgt.earthquake.jooqmodel.tables.pojos.FlywaySchemaHistory> = fetch(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.SUCCESS, *values.toTypedArray())
+    fun fetchBySuccess(vararg values: Boolean): List<com.mgt.earthquake.jooqmodel.tables.pojos.FlywaySchemaHistory> = fetch(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.SUCCESS, *values.toTypedArray())
 }

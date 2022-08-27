@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import jakarta.persistence.UniqueConstraint
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 
@@ -22,30 +23,34 @@ import java.io.Serializable
 @Suppress("UNCHECKED_CAST")
 @Entity
 @Table(
-    name = "quake"
+    name = "quake",
+    uniqueConstraints = [
+        UniqueConstraint(name = "quake_quakeid_key", columnNames = [ "quakeid" ])
+    ]
 )
 data class Quake(
     @get:Id
     @get:GeneratedValue(strategy = GenerationType.IDENTITY)
-    @get:Column(name = "id", nullable = false, precision = 19)
+    @get:Column(name = "id", nullable = false, precision = 64)
     var id: Long? = null,
-    @get:Column(name = "latitude", nullable = false, precision = 22)
+    @get:Column(name = "latitude", nullable = false, precision = 53)
     @get:NotNull
     var latitude: Double? = null,
-    @get:Column(name = "longitude", nullable = false, precision = 22)
+    @get:Column(name = "longitude", nullable = false, precision = 53)
     @get:NotNull
     var longitude: Double? = null,
-    @get:Column(name = "magnitude", nullable = false, precision = 22)
+    @get:Column(name = "magnitude", nullable = false, precision = 53)
     @get:NotNull
     var magnitude: Double? = null,
-    @get:Column(name = "quakeid", length = 255)
-    @get:Size(max = 255)
+    @get:Column(name = "quakeid", nullable = false, length = 200)
+    @get:NotNull
+    @get:Size(max = 200)
     var quakeid: String? = null,
-    @get:Column(name = "quaketime", length = 255)
-    @get:Size(max = 255)
+    @get:Column(name = "quaketime", length = 200)
+    @get:Size(max = 200)
     var quaketime: String? = null,
-    @get:Column(name = "title", length = 255)
-    @get:Size(max = 255)
+    @get:Column(name = "title", length = 200)
+    @get:Size(max = 200)
     var title: String? = null
 ): Serializable {
 

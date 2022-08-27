@@ -9,11 +9,11 @@ mongodb:
 r2dbc:
   datasources:
     rx-quake:
-      url: r2dbc:tc:mysql:///test?TC_IMAGE_TAG=8
+      url: r2dbc:tc:postgresql:///db?TC_IMAGE_TAG=12
       username: test
       password: test
       schema-generate: NONE
-      dialect: MYSQL
+      dialect: POSTGRES
 jpa:
   default:
     properties:

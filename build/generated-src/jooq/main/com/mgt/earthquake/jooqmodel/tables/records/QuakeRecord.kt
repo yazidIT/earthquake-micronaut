@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import jakarta.persistence.UniqueConstraint
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 
@@ -28,49 +29,53 @@ import org.jooq.impl.UpdatableRecordImpl
 @Suppress("UNCHECKED_CAST")
 @Entity
 @Table(
-    name = "quake"
+    name = "quake",
+    uniqueConstraints = [
+        UniqueConstraint(name = "quake_quakeid_key", columnNames = [ "quakeid" ])
+    ]
 )
 open class QuakeRecord() : UpdatableRecordImpl<QuakeRecord>(Quake.QUAKE), Record7<Long?, Double?, Double?, Double?, String?, String?, String?> {
 
     @get:Id
     @get:GeneratedValue(strategy = GenerationType.IDENTITY)
-    @get:Column(name = "id", nullable = false, precision = 19)
+    @get:Column(name = "id", nullable = false, precision = 64)
     var id: Long?
         set(value): Unit = set(0, value)
         get(): Long? = get(0) as Long?
 
-    @get:Column(name = "latitude", nullable = false, precision = 22)
+    @get:Column(name = "latitude", nullable = false, precision = 53)
     @get:NotNull
     var latitude: Double?
         set(value): Unit = set(1, value)
         get(): Double? = get(1) as Double?
 
-    @get:Column(name = "longitude", nullable = false, precision = 22)
+    @get:Column(name = "longitude", nullable = false, precision = 53)
     @get:NotNull
     var longitude: Double?
         set(value): Unit = set(2, value)
         get(): Double? = get(2) as Double?
 
-    @get:Column(name = "magnitude", nullable = false, precision = 22)
+    @get:Column(name = "magnitude", nullable = false, precision = 53)
     @get:NotNull
     var magnitude: Double?
         set(value): Unit = set(3, value)
         get(): Double? = get(3) as Double?
 
-    @get:Column(name = "quakeid", length = 255)
-    @get:Size(max = 255)
+    @get:Column(name = "quakeid", nullable = false, length = 200)
+    @get:NotNull
+    @get:Size(max = 200)
     var quakeid: String?
         set(value): Unit = set(4, value)
         get(): String? = get(4) as String?
 
-    @get:Column(name = "quaketime", length = 255)
-    @get:Size(max = 255)
+    @get:Column(name = "quaketime", length = 200)
+    @get:Size(max = 200)
     var quaketime: String?
         set(value): Unit = set(5, value)
         get(): String? = get(5) as String?
 
-    @get:Column(name = "title", length = 255)
-    @get:Size(max = 255)
+    @get:Column(name = "title", length = 200)
+    @get:Size(max = 200)
     var title: String?
         set(value): Unit = set(6, value)
         get(): String? = get(6) as String?

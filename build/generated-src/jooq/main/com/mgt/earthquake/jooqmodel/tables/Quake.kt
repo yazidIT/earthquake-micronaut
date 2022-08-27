@@ -5,8 +5,11 @@ package com.mgt.earthquake.jooqmodel.tables
 
 
 import com.mgt.earthquake.jooqmodel.DefaultSchema
-import com.mgt.earthquake.jooqmodel.keys.KEY_QUAKE_PRIMARY
+import com.mgt.earthquake.jooqmodel.keys.QUAKE_PKEY
+import com.mgt.earthquake.jooqmodel.keys.QUAKE_QUAKEID_KEY
 import com.mgt.earthquake.jooqmodel.tables.records.QuakeRecord
+
+import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
@@ -81,17 +84,17 @@ open class Quake(
     /**
      * The column <code>quake.quakeid</code>.
      */
-    val QUAKEID: TableField<QuakeRecord, String?> = createField(DSL.name("quakeid"), SQLDataType.VARCHAR(255), this, "")
+    val QUAKEID: TableField<QuakeRecord, String?> = createField(DSL.name("quakeid"), SQLDataType.VARCHAR(200).nullable(false), this, "")
 
     /**
      * The column <code>quake.quaketime</code>.
      */
-    val QUAKETIME: TableField<QuakeRecord, String?> = createField(DSL.name("quaketime"), SQLDataType.VARCHAR(255), this, "")
+    val QUAKETIME: TableField<QuakeRecord, String?> = createField(DSL.name("quaketime"), SQLDataType.VARCHAR(200).defaultValue(DSL.field("NULL::character varying", SQLDataType.VARCHAR)), this, "")
 
     /**
      * The column <code>quake.title</code>.
      */
-    val TITLE: TableField<QuakeRecord, String?> = createField(DSL.name("title"), SQLDataType.VARCHAR(255), this, "")
+    val TITLE: TableField<QuakeRecord, String?> = createField(DSL.name("title"), SQLDataType.VARCHAR(200).defaultValue(DSL.field("NULL::character varying", SQLDataType.VARCHAR)), this, "")
 
     private constructor(alias: Name, aliased: Table<QuakeRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<QuakeRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
@@ -114,7 +117,8 @@ open class Quake(
     constructor(child: Table<out Record>, key: ForeignKey<out Record, QuakeRecord>): this(Internal.createPathAlias(child, key), child, key, QUAKE, null)
     override fun getSchema(): Schema? = if (aliased()) null else DefaultSchema.DEFAULT_SCHEMA
     override fun getIdentity(): Identity<QuakeRecord, Long?> = super.getIdentity() as Identity<QuakeRecord, Long?>
-    override fun getPrimaryKey(): UniqueKey<QuakeRecord> = KEY_QUAKE_PRIMARY
+    override fun getPrimaryKey(): UniqueKey<QuakeRecord> = QUAKE_PKEY
+    override fun getUniqueKeys(): List<UniqueKey<QuakeRecord>> = listOf(QUAKE_QUAKEID_KEY)
     override fun `as`(alias: String): Quake = Quake(DSL.name(alias), this)
     override fun `as`(alias: Name): Quake = Quake(alias, this)
 

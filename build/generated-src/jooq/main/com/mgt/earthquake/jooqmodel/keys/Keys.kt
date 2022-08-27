@@ -19,5 +19,6 @@ import org.jooq.impl.Internal
 // UNIQUE and PRIMARY KEY definitions
 // -------------------------------------------------------------------------
 
-val KEY_FLYWAY_SCHEMA_HISTORY_PRIMARY: UniqueKey<FlywaySchemaHistoryRecord> = Internal.createUniqueKey(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, DSL.name("KEY_flyway_schema_history_PRIMARY"), arrayOf(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_RANK), true)
-val KEY_QUAKE_PRIMARY: UniqueKey<QuakeRecord> = Internal.createUniqueKey(Quake.QUAKE, DSL.name("KEY_quake_PRIMARY"), arrayOf(Quake.QUAKE.ID), true)
+val FLYWAY_SCHEMA_HISTORY_PK: UniqueKey<FlywaySchemaHistoryRecord> = Internal.createUniqueKey(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, DSL.name("flyway_schema_history_pk"), arrayOf(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_RANK), true)
+val QUAKE_PKEY: UniqueKey<QuakeRecord> = Internal.createUniqueKey(Quake.QUAKE, DSL.name("quake_pkey"), arrayOf(Quake.QUAKE.ID), true)
+val QUAKE_QUAKEID_KEY: UniqueKey<QuakeRecord> = Internal.createUniqueKey(Quake.QUAKE, DSL.name("quake_quakeid_key"), arrayOf(Quake.QUAKE.QUAKEID), true)

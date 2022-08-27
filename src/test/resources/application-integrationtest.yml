@@ -4,20 +4,20 @@ mongodb:
   uri: mongodb://quake:quake@localhost:27017/quakedb
 datasources:
   default:
-    url: jdbc:mysql://localhost:6033/quakedb
-    driverClassName: com.mysql.cj.jdbc.Driver
-    db-type: mysql
+    url: jdbc:postgresql://localhost:5432/quakedb
+    driverClassName: org.postgresql.Driver
+    db-type: postgresql
     username: dbuser
     password: dbuser
-    dialect: org.hibernate.dialect.MySQL57Dialect
+    dialect: org.hibernate.dialect.PostgreSQLDialect
 r2dbc:
   datasources:
     rx-quake:
-      url: r2dbc:mysql://localhost:6033/quakedb
+      url: r2dbc:postgresql://localhost:5432/quakedb
       username: dbuser
       password: dbuser
       schema-generate: NONE
-      dialect: MYSQL
+      dialect: POSTGRES
 jpa:
   default:
     properties:

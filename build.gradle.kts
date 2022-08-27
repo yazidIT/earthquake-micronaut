@@ -66,8 +66,10 @@ dependencies {
     runtimeOnly("com.h2database:h2")
     runtimeOnly("io.r2dbc:r2dbc-h2")
     runtimeOnly("org.flywaydb:flyway-mysql")
-    runtimeOnly("mysql:mysql-connector-java")
-    runtimeOnly("dev.miku:r2dbc-mysql")
+
+    runtimeOnly("org.postgresql:postgresql")
+    runtimeOnly("org.postgresql:r2dbc-postgresql")
+    testImplementation("org.testcontainers:postgresql")
 
     testImplementation("org.testcontainers:mongodb")
     testImplementation("org.testcontainers:testcontainers")
@@ -121,7 +123,7 @@ allOpen {
 }
 
 dependencies {
-    jooqGenerator("mysql:mysql-connector-java:8.0.27")
+    jooqGenerator("org.postgresql:postgresql:42.4.0")
 }
 
 jooq {
@@ -137,8 +139,8 @@ jooq {
                 generateSchemaSourceOnCompilation.set(false)
 
                 jdbc.apply {
-                    driver = "com.mysql.cj.jdbc.Driver"
-                    url = "jdbc:mysql://localhost:6033/quakedb"
+                    driver = "org.postgresql.Driver"
+                    url = "jdbc:postgresql://localhost:5432/quakedb"
                     user = "dbuser"
                     password = "dbuser"
                     properties = listOf(
@@ -152,9 +154,9 @@ jooq {
                 generator.apply {
                     name = "org.jooq.codegen.KotlinGenerator"
                     database.apply {
-                        inputSchema = "quakedb"
+                        inputSchema = "public"
                         isOutputSchemaToDefault = true
-                        name = "org.jooq.meta.mysql.MySQLDatabase"
+                        name = "org.jooq.meta.postgres.PostgresDatabase"
                     }
                     generate.apply {
                         isRecords = false

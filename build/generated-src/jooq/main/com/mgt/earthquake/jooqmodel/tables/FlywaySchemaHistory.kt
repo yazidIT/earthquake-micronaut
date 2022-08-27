@@ -5,8 +5,8 @@ package com.mgt.earthquake.jooqmodel.tables
 
 
 import com.mgt.earthquake.jooqmodel.DefaultSchema
-import com.mgt.earthquake.jooqmodel.indexes.FLYWAY_SCHEMA_HISTORY_FLYWAY_SCHEMA_HISTORY_S_IDX
-import com.mgt.earthquake.jooqmodel.keys.KEY_FLYWAY_SCHEMA_HISTORY_PRIMARY
+import com.mgt.earthquake.jooqmodel.indexes.FLYWAY_SCHEMA_HISTORY_S_IDX
+import com.mgt.earthquake.jooqmodel.keys.FLYWAY_SCHEMA_HISTORY_PK
 import com.mgt.earthquake.jooqmodel.tables.records.FlywaySchemaHistoryRecord
 
 import java.time.LocalDateTime
@@ -101,7 +101,7 @@ open class FlywaySchemaHistory(
     /**
      * The column <code>flyway_schema_history.installed_on</code>.
      */
-    val INSTALLED_ON: TableField<FlywaySchemaHistoryRecord, LocalDateTime?> = createField(DSL.name("installed_on"), SQLDataType.LOCALDATETIME(0).nullable(false), this, "")
+    val INSTALLED_ON: TableField<FlywaySchemaHistoryRecord, LocalDateTime?> = createField(DSL.name("installed_on"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("now()", SQLDataType.LOCALDATETIME)), this, "")
 
     /**
      * The column <code>flyway_schema_history.execution_time</code>.
@@ -111,7 +111,7 @@ open class FlywaySchemaHistory(
     /**
      * The column <code>flyway_schema_history.success</code>.
      */
-    val SUCCESS: TableField<FlywaySchemaHistoryRecord, Byte?> = createField(DSL.name("success"), SQLDataType.TINYINT.nullable(false), this, "")
+    val SUCCESS: TableField<FlywaySchemaHistoryRecord, Boolean?> = createField(DSL.name("success"), SQLDataType.BOOLEAN.nullable(false), this, "")
 
     private constructor(alias: Name, aliased: Table<FlywaySchemaHistoryRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<FlywaySchemaHistoryRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
@@ -133,8 +133,8 @@ open class FlywaySchemaHistory(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, FlywaySchemaHistoryRecord>): this(Internal.createPathAlias(child, key), child, key, FLYWAY_SCHEMA_HISTORY, null)
     override fun getSchema(): Schema? = if (aliased()) null else DefaultSchema.DEFAULT_SCHEMA
-    override fun getIndexes(): List<Index> = listOf(FLYWAY_SCHEMA_HISTORY_FLYWAY_SCHEMA_HISTORY_S_IDX)
-    override fun getPrimaryKey(): UniqueKey<FlywaySchemaHistoryRecord> = KEY_FLYWAY_SCHEMA_HISTORY_PRIMARY
+    override fun getIndexes(): List<Index> = listOf(FLYWAY_SCHEMA_HISTORY_S_IDX)
+    override fun getPrimaryKey(): UniqueKey<FlywaySchemaHistoryRecord> = FLYWAY_SCHEMA_HISTORY_PK
     override fun `as`(alias: String): FlywaySchemaHistory = FlywaySchemaHistory(DSL.name(alias), this)
     override fun `as`(alias: Name): FlywaySchemaHistory = FlywaySchemaHistory(alias, this)
 
@@ -151,5 +151,5 @@ open class FlywaySchemaHistory(
     // -------------------------------------------------------------------------
     // Row10 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row10<Int?, String?, String?, String?, String?, Int?, String?, LocalDateTime?, Int?, Byte?> = super.fieldsRow() as Row10<Int?, String?, String?, String?, String?, Int?, String?, LocalDateTime?, Int?, Byte?>
+    override fun fieldsRow(): Row10<Int?, String?, String?, String?, String?, Int?, String?, LocalDateTime?, Int?, Boolean?> = super.fieldsRow() as Row10<Int?, String?, String?, String?, String?, Int?, String?, LocalDateTime?, Int?, Boolean?>
 }

@@ -4,21 +4,22 @@ import io.r2dbc.spi.ConnectionFactoryOptions
 import org.flywaydb.core.Flyway
 import org.flywaydb.core.api.Location
 import org.flywaydb.core.api.configuration.ClassicConfiguration
-import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.containers.MySQLR2DBCDatabaseContainer
+import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.containers.PostgreSQLR2DBCDatabaseContainer
 import org.testcontainers.utility.DockerImageName
 
-object MySqlDbUtils {
+object PostgresSqlDbUtils {
 
-    private var mySqlDBContainer: MySQLContainer<*> =
+    private var mySqlDBContainer: PostgreSQLContainer<*> =
 
-        MySQLContainer(DockerImageName.parse("mysql:8"))
-            .withExposedPorts(3306)
+        PostgreSQLContainer(DockerImageName.parse("postgres:12"))
+            .withExposedPorts(5432)
             .withUsername("test")
             .withPassword("test")
             .withReuse(true)
 
-    var mySqlR2DBCContainer = MySQLR2DBCDatabaseContainer(mySqlDBContainer)
+    var mySqlR2DBCContainer = PostgreSQLR2DBCDatabaseContainer(mySqlDBContainer)
 
     fun startMySqlDb() {
         if (!mySqlDBContainer.isRunning) {

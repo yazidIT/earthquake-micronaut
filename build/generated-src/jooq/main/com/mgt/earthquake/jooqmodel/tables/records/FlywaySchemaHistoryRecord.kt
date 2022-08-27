@@ -34,10 +34,10 @@ import org.jooq.impl.UpdatableRecordImpl
         Index(name = "flyway_schema_history_s_idx", columnList = "success ASC")
     ]
 )
-open class FlywaySchemaHistoryRecord() : UpdatableRecordImpl<FlywaySchemaHistoryRecord>(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY), Record10<Int?, String?, String?, String?, String?, Int?, String?, LocalDateTime?, Int?, Byte?> {
+open class FlywaySchemaHistoryRecord() : UpdatableRecordImpl<FlywaySchemaHistoryRecord>(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY), Record10<Int?, String?, String?, String?, String?, Int?, String?, LocalDateTime?, Int?, Boolean?> {
 
     @get:Id
-    @get:Column(name = "installed_rank", nullable = false, precision = 10)
+    @get:Column(name = "installed_rank", nullable = false, precision = 32)
     @get:NotNull
     var installedRank: Int?
         set(value): Unit = set(0, value)
@@ -70,7 +70,7 @@ open class FlywaySchemaHistoryRecord() : UpdatableRecordImpl<FlywaySchemaHistory
         set(value): Unit = set(4, value)
         get(): String? = get(4) as String?
 
-    @get:Column(name = "checksum", precision = 10)
+    @get:Column(name = "checksum", precision = 32)
     var checksum: Int?
         set(value): Unit = set(5, value)
         get(): Int? = get(5) as Int?
@@ -82,23 +82,22 @@ open class FlywaySchemaHistoryRecord() : UpdatableRecordImpl<FlywaySchemaHistory
         set(value): Unit = set(6, value)
         get(): String? = get(6) as String?
 
-    @get:Column(name = "installed_on", nullable = false)
-    @get:NotNull
+    @get:Column(name = "installed_on", nullable = false, precision = 6)
     var installedOn: LocalDateTime?
         set(value): Unit = set(7, value)
         get(): LocalDateTime? = get(7) as LocalDateTime?
 
-    @get:Column(name = "execution_time", nullable = false, precision = 10)
+    @get:Column(name = "execution_time", nullable = false, precision = 32)
     @get:NotNull
     var executionTime: Int?
         set(value): Unit = set(8, value)
         get(): Int? = get(8) as Int?
 
-    @get:Column(name = "success", nullable = false, precision = 3)
+    @get:Column(name = "success", nullable = false)
     @get:NotNull
-    var success: Byte?
+    var success: Boolean?
         set(value): Unit = set(9, value)
-        get(): Byte? = get(9) as Byte?
+        get(): Boolean? = get(9) as Boolean?
 
     // -------------------------------------------------------------------------
     // Primary key information
@@ -110,8 +109,8 @@ open class FlywaySchemaHistoryRecord() : UpdatableRecordImpl<FlywaySchemaHistory
     // Record10 type implementation
     // -------------------------------------------------------------------------
 
-    override fun fieldsRow(): Row10<Int?, String?, String?, String?, String?, Int?, String?, LocalDateTime?, Int?, Byte?> = super.fieldsRow() as Row10<Int?, String?, String?, String?, String?, Int?, String?, LocalDateTime?, Int?, Byte?>
-    override fun valuesRow(): Row10<Int?, String?, String?, String?, String?, Int?, String?, LocalDateTime?, Int?, Byte?> = super.valuesRow() as Row10<Int?, String?, String?, String?, String?, Int?, String?, LocalDateTime?, Int?, Byte?>
+    override fun fieldsRow(): Row10<Int?, String?, String?, String?, String?, Int?, String?, LocalDateTime?, Int?, Boolean?> = super.fieldsRow() as Row10<Int?, String?, String?, String?, String?, Int?, String?, LocalDateTime?, Int?, Boolean?>
+    override fun valuesRow(): Row10<Int?, String?, String?, String?, String?, Int?, String?, LocalDateTime?, Int?, Boolean?> = super.valuesRow() as Row10<Int?, String?, String?, String?, String?, Int?, String?, LocalDateTime?, Int?, Boolean?>
     override fun field1(): Field<Int?> = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_RANK
     override fun field2(): Field<String?> = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.VERSION
     override fun field3(): Field<String?> = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.DESCRIPTION
@@ -121,7 +120,7 @@ open class FlywaySchemaHistoryRecord() : UpdatableRecordImpl<FlywaySchemaHistory
     override fun field7(): Field<String?> = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_BY
     override fun field8(): Field<LocalDateTime?> = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_ON
     override fun field9(): Field<Int?> = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.EXECUTION_TIME
-    override fun field10(): Field<Byte?> = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.SUCCESS
+    override fun field10(): Field<Boolean?> = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.SUCCESS
     override fun component1(): Int? = installedRank
     override fun component2(): String? = version
     override fun component3(): String? = description
@@ -131,7 +130,7 @@ open class FlywaySchemaHistoryRecord() : UpdatableRecordImpl<FlywaySchemaHistory
     override fun component7(): String? = installedBy
     override fun component8(): LocalDateTime? = installedOn
     override fun component9(): Int? = executionTime
-    override fun component10(): Byte? = success
+    override fun component10(): Boolean? = success
     override fun value1(): Int? = installedRank
     override fun value2(): String? = version
     override fun value3(): String? = description
@@ -141,7 +140,7 @@ open class FlywaySchemaHistoryRecord() : UpdatableRecordImpl<FlywaySchemaHistory
     override fun value7(): String? = installedBy
     override fun value8(): LocalDateTime? = installedOn
     override fun value9(): Int? = executionTime
-    override fun value10(): Byte? = success
+    override fun value10(): Boolean? = success
 
     override fun value1(value: Int?): FlywaySchemaHistoryRecord {
         this.installedRank = value
@@ -188,12 +187,12 @@ open class FlywaySchemaHistoryRecord() : UpdatableRecordImpl<FlywaySchemaHistory
         return this
     }
 
-    override fun value10(value: Byte?): FlywaySchemaHistoryRecord {
+    override fun value10(value: Boolean?): FlywaySchemaHistoryRecord {
         this.success = value
         return this
     }
 
-    override fun values(value1: Int?, value2: String?, value3: String?, value4: String?, value5: String?, value6: Int?, value7: String?, value8: LocalDateTime?, value9: Int?, value10: Byte?): FlywaySchemaHistoryRecord {
+    override fun values(value1: Int?, value2: String?, value3: String?, value4: String?, value5: String?, value6: Int?, value7: String?, value8: LocalDateTime?, value9: Int?, value10: Boolean?): FlywaySchemaHistoryRecord {
         this.value1(value1)
         this.value2(value2)
         this.value3(value3)
@@ -210,7 +209,7 @@ open class FlywaySchemaHistoryRecord() : UpdatableRecordImpl<FlywaySchemaHistory
     /**
      * Create a detached, initialised FlywaySchemaHistoryRecord
      */
-    constructor(installedRank: Int? = null, version: String? = null, description: String? = null, type: String? = null, script: String? = null, checksum: Int? = null, installedBy: String? = null, installedOn: LocalDateTime? = null, executionTime: Int? = null, success: Byte? = null): this() {
+    constructor(installedRank: Int? = null, version: String? = null, description: String? = null, type: String? = null, script: String? = null, checksum: Int? = null, installedBy: String? = null, installedOn: LocalDateTime? = null, executionTime: Int? = null, success: Boolean? = null): this() {
         this.installedRank = installedRank
         this.version = version
         this.description = description

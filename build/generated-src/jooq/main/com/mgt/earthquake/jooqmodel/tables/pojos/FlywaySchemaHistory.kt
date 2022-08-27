@@ -29,7 +29,7 @@ import java.time.LocalDateTime
 )
 data class FlywaySchemaHistory(
     @get:Id
-    @get:Column(name = "installed_rank", nullable = false, precision = 10)
+    @get:Column(name = "installed_rank", nullable = false, precision = 32)
     @get:NotNull
     var installedRank: Int? = null,
     @get:Column(name = "version", length = 50)
@@ -47,21 +47,20 @@ data class FlywaySchemaHistory(
     @get:NotNull
     @get:Size(max = 1000)
     var script: String? = null,
-    @get:Column(name = "checksum", precision = 10)
+    @get:Column(name = "checksum", precision = 32)
     var checksum: Int? = null,
     @get:Column(name = "installed_by", nullable = false, length = 100)
     @get:NotNull
     @get:Size(max = 100)
     var installedBy: String? = null,
-    @get:Column(name = "installed_on", nullable = false)
-    @get:NotNull
+    @get:Column(name = "installed_on", nullable = false, precision = 6)
     var installedOn: LocalDateTime? = null,
-    @get:Column(name = "execution_time", nullable = false, precision = 10)
+    @get:Column(name = "execution_time", nullable = false, precision = 32)
     @get:NotNull
     var executionTime: Int? = null,
-    @get:Column(name = "success", nullable = false, precision = 3)
+    @get:Column(name = "success", nullable = false)
     @get:NotNull
-    var success: Byte? = null
+    var success: Boolean? = null
 ): Serializable {
 
 

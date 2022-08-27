@@ -4,9 +4,6 @@ import com.mgt.earthquake.jooqmodel.tables.pojos.Quake
 import io.kotest.core.spec.style.FunSpec
 import io.micronaut.context.ApplicationContext
 import io.micronaut.test.support.TestPropertyProvider
-import org.flywaydb.core.Flyway
-import org.flywaydb.core.api.Location
-import org.flywaydb.core.api.configuration.ClassicConfiguration
 import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory
 
@@ -14,9 +11,9 @@ import org.slf4j.LoggerFactory
 class QuakeSqlRepositoryTest: FunSpec({
 
     val map = mutableMapOf<String, Any>(
-        "r2dbc.datasources.rx-quake.url" to MySqlDbUtils.mySqlDbUri.replace("jdbc", "r2dbc"),
-        "r2dbc.datasources.rx-quake.username" to MySqlDbUtils.mySqlDbUsername,
-        "r2dbc.datasources.rx-quake.password" to MySqlDbUtils.mySqlDbPassword
+        "r2dbc.datasources.rx-quake.url" to PostgresSqlDbUtils.mySqlDbUri.replace("jdbc", "r2dbc"),
+        "r2dbc.datasources.rx-quake.username" to PostgresSqlDbUtils.mySqlDbUsername,
+        "r2dbc.datasources.rx-quake.password" to PostgresSqlDbUtils.mySqlDbPassword
     )
     val context = ApplicationContext.run(map)
 
@@ -129,7 +126,7 @@ class QuakeSqlRepositoryTest: FunSpec({
 }), TestPropertyProvider {
 
     override fun getProperties(): MutableMap<String, String> {
-        MySqlDbUtils.startMySqlDb()
+        PostgresSqlDbUtils.startMySqlDb()
         return mutableMapOf()
     }
 }
