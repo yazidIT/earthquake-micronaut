@@ -21,7 +21,7 @@ class QuakeServiceImpl (
     private val quakeClient: EarthQuakeClient
 ) : QuakeService {
 
-    override suspend fun create(quakedto: QuakeDTO): QuakeModel {
+    override suspend fun create(quakedto: QuakeDTO): QuakeModel? {
 
         val quakeitem = QuakeModel(
             title = quakedto.title,
