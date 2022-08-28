@@ -39,4 +39,14 @@ abstract class QuakeRepository(
     fun findLatestNumber(number: Int): Flow<QuakeModel> =
 
         collection.find().sort(BasicDBObject("_id", -1)).limit(number).asFlow()
+
+    suspend fun save(quakeModel: QuakeModel): QuakeModel? {
+
+        if(findByQuakeid(quakeModel.quakeid) != null)
+            return null
+
+        collection.insertOne(quakeModel).awaitFirstOrNull()?.let {
+            return quakeModel.copy(id = it.insertedId!!.asObjectId().value)
+        } ?: return null
+    }
 }
