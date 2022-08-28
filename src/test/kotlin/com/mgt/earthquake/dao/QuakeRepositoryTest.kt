@@ -41,7 +41,7 @@ class QuakeRepositoryTest(
         Assertions.assertEquals(result.size, 0)
     }
 
-    test("create Quake object and findById - success") {
+    test("create Quake object and findById should work") {
 
         // given
         val quake1 = QuakeModel(title = "Quake NE Japan", magnitude = 6.5, latitude = 3.1414,
@@ -59,6 +59,22 @@ class QuakeRepositoryTest(
         // then
         Assertions.assertNotNull(result2)
         Assertions.assertEquals(quake1.title, result2!!.title)
+    }
+
+    test("create Quake object with existing quakeid should fail") {
+
+        // given
+        val quake1 = QuakeModel(title = "Quake NE Japan", magnitude = 6.5, latitude = 3.1414,
+            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000hfxm")
+
+        underTest.save(quake1)
+
+        // given
+        val quake2 = QuakeModel(title = "Quake NE Japan 2", magnitude = 6.7, latitude = 25.1234,
+            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000hfxm")
+
+        val createresult = underTest.save(quake2)
+        Assertions.assertNull(createresult)
     }
 
     test("create Quake object, findByTitle & findByQuakeid - success") {
