@@ -4,7 +4,7 @@ import com.mgt.earthquake.client.EarthQuakeClient
 import com.mgt.earthquake.dao.QuakeRepository
 import io.kotest.core.spec.style.FunSpec
 import io.micronaut.test.annotation.MockBean
-import io.micronaut.test.extensions.kotest.annotation.MicronautTest
+import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory
