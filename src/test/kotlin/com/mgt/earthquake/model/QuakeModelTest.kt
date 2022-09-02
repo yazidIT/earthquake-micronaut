@@ -1,8 +1,8 @@
 package com.mgt.earthquake.model
 
 import io.kotest.core.spec.style.FunSpec
+import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 import io.micronaut.serde.ObjectMapper
-import io.micronaut.test.extensions.kotest.annotation.MicronautTest
 import org.bson.codecs.pojo.ClassModel
 import org.junit.jupiter.api.Assertions
 

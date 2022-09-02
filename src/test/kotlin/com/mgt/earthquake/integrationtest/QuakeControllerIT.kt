@@ -4,6 +4,8 @@ import com.mgt.earthquake.dao.QuakeRepository
 import com.mgt.earthquake.dao.QuakeSqlRepository
 import com.mgt.earthquake.model.QuakeDTO
 import com.mgt.earthquake.model.QuakeModel
+import com.mgt.earthquake.service.QuakeService
+import com.mgt.earthquake.service.QuakeSqlService
 import io.kotest.core.spec.style.FunSpec
 import io.micronaut.core.type.Argument
 import io.micronaut.http.HttpRequest
@@ -12,8 +14,7 @@ import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.HttpClient
 import io.micronaut.http.client.StreamingHttpClient
 import io.micronaut.http.client.annotation.Client
-import io.micronaut.test.extensions.kotest.annotation.MicronautTest
-import kotlinx.coroutines.flow.collect
+import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.reactive.asFlow
 import org.junit.jupiter.api.Assertions
@@ -28,7 +29,9 @@ class QuakeControllerIT(
     val streamClient: StreamingHttpClient,
 
     val quakeSqlRepo: QuakeSqlRepository,
-    val quakeRepo: QuakeRepository
+    val quakeRepo: QuakeRepository,
+    val quakeSqlService: QuakeSqlService,
+    val quakeService: QuakeService
 
 ) : FunSpec({
 
@@ -37,12 +40,12 @@ class QuakeControllerIT(
     beforeSpec {
         val quake1 = QuakeModel(title = "Quake NE Japan1", magnitude = 6.5, latitude = 3.1414,
             longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000hfxm")
-        val quake2 = QuakeModel(title = "Quake NE Japan2", magnitude = 6.9, latitude = 5.73455,
+        val quake2 = QuakeModel(title = "Quake NE Japan2", magnitude = 6.9, latitude = 11.73455,
             longitude = 90.232323, quaketime = "2022-05-22T06:15:23.756000", quakeid = "us6000hfjk")
-        val quake3 = QuakeModel(title = "Quake NE Japan3", magnitude = 6.5, latitude = 3.1414,
-            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000hfxn")
+        val quake3 = QuakeModel(title = "Quake NE Japan3", magnitude = 6.5, latitude = 3.7788,
+            longitude = 67.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000hfxn")
         val quake4 = QuakeModel(title = "Quake NE Japan4", magnitude = 6.9, latitude = 5.73455,
-            longitude = 90.232323, quaketime = "2022-05-22T06:15:23.756000", quakeid = "us6000hfjl")
+            longitude = 72.232323, quaketime = "2022-05-22T06:15:23.756000", quakeid = "us6000hfjl")
 
         quakeRepo.saveAll(listOf(quake1, quake2, quake3, quake4)).toList()
 
@@ -66,12 +69,40 @@ class QuakeControllerIT(
         logger.info("$data")
     }
 
+    test("quakeSqlService create should work") {
+        // given
+        val quakedto = QuakeDTO(
+            title = "Quake NE Japan", magnitude = 6.5, latitude = 3.1414,
+            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000hfxa"
+        )
+
+        val result = quakeSqlService.create(quakedto)
+
+        // then
+        Assertions.assertNotNull(result)
+        logger.info("$result")
+    }
+
+    test("quakeService create should work") {
+        // given
+        val quakedto = QuakeDTO(
+            title = "Quake NE Japan", magnitude = 6.5, latitude = 3.1414,
+            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000nbhj"
+        )
+
+        val result = quakeService.create(quakedto)
+
+        // then
+        Assertions.assertNotNull(result)
+        logger.info("$result")
+    }
+
     test("POST /quake/add should complete successfully") {
 
         // given
         val quakedto = QuakeDTO(
             title = "Quake NE Japan", magnitude = 6.5, latitude = 3.1414,
-            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000hfxm"
+            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000asdf"
         )
 
         val request = HttpRequest.POST("/quake/add", quakedto)
@@ -88,14 +119,17 @@ class QuakeControllerIT(
         // Read data from mongodb
         val result = quakeRepo.findAll().toList()
 
-        Assertions.assertEquals(5, result.size)
-        Assertions.assertEquals( "us6000hfxm", result[0].quakeid)
+        Assertions.assertEquals(6, result.size)
+        val check = result.filter { it.quakeid == quakedto.quakeid }
+        Assertions.assertTrue(check.isNotEmpty())
 
         // Read data from mysql
         val resultsql = quakeSqlRepo.findAll()
 
-        Assertions.assertEquals(1, resultsql.size)
-        Assertions.assertEquals(103.4534, resultsql[0].longitude)
+        Assertions.assertEquals(2, resultsql.size)
+
+        val checksql = resultsql.filter { it.quakeid == "us6000asdf" }
+        Assertions.assertTrue(checksql.isNotEmpty())
     }
 
     test("GET /quake/list/json/{number} should complete successfully") {

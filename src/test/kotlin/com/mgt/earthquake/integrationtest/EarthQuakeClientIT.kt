@@ -2,7 +2,7 @@ package com.mgt.earthquake.integrationtest
 
 import com.mgt.earthquake.client.EarthQuakeClient
 import io.kotest.core.spec.style.FunSpec
-import io.micronaut.test.extensions.kotest.annotation.MicronautTest
+import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 import kotlinx.coroutines.flow.first
 import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory

@@ -4,9 +4,6 @@ import com.mgt.earthquake.jooqmodel.tables.pojos.Quake
 import io.kotest.core.spec.style.FunSpec
 import io.micronaut.context.ApplicationContext
 import io.micronaut.test.support.TestPropertyProvider
-import org.flywaydb.core.Flyway
-import org.flywaydb.core.api.Location
-import org.flywaydb.core.api.configuration.ClassicConfiguration
 import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory
 
