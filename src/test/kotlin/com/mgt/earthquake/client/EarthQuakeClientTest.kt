@@ -7,7 +7,7 @@ import com.mgt.earthquake.model.QuakeResponse
 import com.mgt.earthquake.model.QuakeResponseFeature
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.mockserver.MockServerListener
-import io.micronaut.test.extensions.kotest.annotation.MicronautTest
+import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import org.junit.jupiter.api.Assertions

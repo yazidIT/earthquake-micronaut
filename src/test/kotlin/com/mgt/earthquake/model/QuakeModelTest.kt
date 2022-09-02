@@ -2,7 +2,7 @@ package com.mgt.earthquake.model
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.kotest.core.spec.style.FunSpec
-import io.micronaut.test.extensions.kotest.annotation.MicronautTest
+import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 import org.junit.jupiter.api.Assertions
 
 @MicronautTest
