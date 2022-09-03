@@ -5,6 +5,7 @@ import io.micronaut.data.annotation.Id
 import io.micronaut.data.annotation.MappedEntity
 import io.micronaut.serde.annotation.Serdeable
 import org.bson.codecs.pojo.annotations.BsonCreator
+import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.codecs.pojo.annotations.BsonProperty
 import org.bson.types.ObjectId
 
@@ -15,7 +16,7 @@ data class QuakeModel @BsonCreator constructor(
 
     @GeneratedValue
     @field:Id
-    @param:BsonProperty("id")
+    @param:BsonId
     var id: ObjectId? = null,
 
     @param:BsonProperty("title")
