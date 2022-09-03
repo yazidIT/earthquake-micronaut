@@ -15,7 +15,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withContext
 
 @Controller
@@ -40,11 +39,11 @@ class QuakeController (
     }
 
 
-    @Post(value = "/quake/addlist")
-    suspend fun addQuakeList(quakelist: QuakeDTOList) = withContext(ioDispatcher) {
+    @Post(value = "/quake/addlist", produces = [MediaType.APPLICATION_JSON_STREAM])
+    fun addQuakeList(quakelist: QuakeDTOList): Flow<QuakeModel> {
 
         quakeSqlService.createList(quakelist.quakeList)
-        return@withContext quakeService.createList(quakelist.quakeList)
+        return quakeService.createList(quakelist.quakeList)
     }
 
     @Get(value = "/quake/latest")
@@ -56,8 +55,8 @@ class QuakeController (
         quakeService.latestNumberOfQuake(number).flowOn(ioDispatcher)
 
 
-    @Get(value = "/quake/list/{number}")
-    suspend fun latestListByNumber(@PathVariable number: Int): List<QuakeModel> =
+    @Get(value = "/quake/list/{number}", produces = [MediaType.APPLICATION_JSON_STREAM])
+    fun latestListByNumber(@PathVariable number: Int): Flow<QuakeModel> =
 
-        quakeService.latestNumberOfQuake(number).flowOn(Dispatchers.IO).toList()
+        quakeService.latestNumberOfQuake(number).flowOn(Dispatchers.IO)
 }

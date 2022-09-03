@@ -84,7 +84,7 @@ class QuakeControllerTest(
 
         val request = HttpRequest.POST<Any>("/quake/addlist", quakelist)
 
-        val httpresponse = httpClient.toBlocking().exchange(request, List::class.java)
+        val httpresponse = httpClient.toBlocking().exchange(request, Argument.of(QuakeModel::class.java))
 
         // then
         Assertions.assertEquals(HttpStatus.OK, httpresponse.status)
@@ -107,7 +107,7 @@ class QuakeControllerTest(
 
         val request = HttpRequest.GET<String>("/quake/latest")
 
-        val httpresponse = httpClient.toBlocking().exchange(request, List::class.java)
+        val httpresponse = httpClient.toBlocking().exchange(request, Argument.listOf(QuakeResponse::class.java))
 
         // then
         Assertions.assertEquals(HttpStatus.OK, httpresponse.status)
@@ -166,11 +166,17 @@ class QuakeControllerTest(
         coEvery { quakeService.latestNumberOfQuake(any()) } returns flowOf(quake1, quake2, quake3, quake4)
 
         val request = HttpRequest.GET<String>("/quake/list/$number")
-        val httpresponse = httpClient.toBlocking().exchange(request, Argument.listOf(QuakeModel::class.java))
+
+        var count = 0
+        streamClient.jsonStream(request, Argument.of(QuakeModel::class.java)).asFlow()
+            .collect {
+                logger.info("$it")
+                count += 1
+            }
 
         // then
-        Assertions.assertEquals(4, httpresponse.body()!!.size)
-        logger.info("${httpresponse.body()}")
+        Assertions.assertEquals(4, count)
+
     }
 
 }) {
