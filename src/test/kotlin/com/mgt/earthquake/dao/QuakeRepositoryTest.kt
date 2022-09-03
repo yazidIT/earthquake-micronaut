@@ -2,16 +2,21 @@ package com.mgt.earthquake.dao
 
 import com.mgt.earthquake.dao.MongoDbUtils.mongoDbUri
 import com.mgt.earthquake.model.QuakeModel
+import com.mgt.earthquake.model.QuakeModelCodec
+import com.mongodb.ConnectionString
+import com.mongodb.MongoClientSettings
 import io.kotest.core.spec.style.FunSpec
 import io.micronaut.context.ApplicationContext
 import io.micronaut.test.support.TestPropertyProvider
 import kotlinx.coroutines.flow.toList
+import org.bson.codecs.BsonCodecProvider
+import org.bson.codecs.configuration.CodecRegistries
+import org.bson.codecs.configuration.CodecRegistry
+import org.bson.codecs.pojo.PojoCodecProvider
 import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory
 
-class QuakeRepositoryTest(
-
-): FunSpec({
+class QuakeRepositoryTest: FunSpec({
 
     val logger = LoggerFactory.getLogger(QuakeRepositoryTest::class.java)
 
@@ -20,6 +25,18 @@ class QuakeRepositoryTest(
         "mongodb.name" to "test",
     )
     val context = ApplicationContext.run(map)
+
+//    val quakemodelcodec = context.getBean(QuakeModelCodec::class.java)
+//    val bsonCodecRegistry: CodecRegistry = CodecRegistries.fromRegistries(
+//        CodecRegistries.fromCodecs(quakemodelcodec), // <---- this is the custom codec
+//        MongoClientSettings.getDefaultCodecRegistry(),
+//        CodecRegistries.fromProviders(BsonCodecProvider())
+//    )
+//
+//    MongoClientSettings.builder()
+//        .codecRegistry(bsonCodecRegistry)
+//        .applyConnectionString(ConnectionString(mongoDbUri))
+//        .build()
 
     val underTest = context.getBean(QuakeRepository::class.java)
 

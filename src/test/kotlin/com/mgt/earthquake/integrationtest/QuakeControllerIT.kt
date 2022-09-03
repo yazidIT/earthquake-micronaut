@@ -4,6 +4,7 @@ import com.mgt.earthquake.dao.QuakeRepository
 import com.mgt.earthquake.dao.QuakeSqlRepository
 import com.mgt.earthquake.model.QuakeDTO
 import com.mgt.earthquake.model.QuakeModel
+import com.mgt.earthquake.model.QuakeResponse
 import com.mgt.earthquake.service.QuakeService
 import com.mgt.earthquake.service.QuakeSqlService
 import io.kotest.core.spec.style.FunSpec
@@ -59,7 +60,8 @@ class QuakeControllerIT(
 
         val request = HttpRequest.GET<String>("/quake/latest")
 
-        val httpresponse: HttpResponse<List<*>> = httpClient.toBlocking().exchange(request, Argument.of(List::class.java))
+        val httpresponse: HttpResponse<List<QuakeResponse>> = httpClient.toBlocking().exchange(request, Argument.listOf(
+            QuakeResponse::class.java))
 
         // then
         Assertions.assertEquals(HttpStatus.OK, httpresponse.status)
@@ -157,10 +159,20 @@ class QuakeControllerIT(
         val number = 3
 
         val request = HttpRequest.GET<String>("/quake/list/$number")
-        val httpresponse = httpClient.toBlocking().exchange(request, Argument.listOf(QuakeModel::class.java))
+//        val httpresponse = httpClient.toBlocking().exchange(request, Argument.listOf(QuakeModel::class.java))
 
         // then
-        Assertions.assertEquals(3, httpresponse.body()!!.size)
-        logger.info("${httpresponse.body()}")
+        var count = 0
+        streamClient.jsonStream(request, Argument.of(QuakeModel::class.java)).asFlow()
+            .collect {
+                logger.info("$it")
+                count += 1
+            }
+
+        // then
+        Assertions.assertEquals(3, count)
+
+//        Assertions.assertEquals(3, httpresponse.body()!!.size)
+//        logger.info("${httpresponse.body()}")
     }
 })
