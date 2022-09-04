@@ -57,7 +57,7 @@ class QuakeControllerTest(
 
         val request = HttpRequest.POST<Any>("/quake/add", quakedto)
 
-        val httpresponse = httpClient.toBlocking().exchange(request, QuakeModel::class.java)
+        val httpresponse = httpClient.toBlocking().exchange(request, Argument.of(QuakeModel::class.java))
 
         // then
         Assertions.assertEquals(HttpStatus.OK, httpresponse.status)
@@ -79,12 +79,12 @@ class QuakeControllerTest(
             latitude = 3.1234, longitude = 103.3, quakeid = "fwiohfdd1")
 
         // when
-        coEvery { quakeService.createList(any()) } returns flowOf(quake, quake2)
         coEvery { quakeSqlService.createList(any()) } just Runs
+        coEvery { quakeService.createList(any()) } returns flowOf(quake, quake2)
 
         val request = HttpRequest.POST<Any>("/quake/addlist", quakelist)
 
-        val httpresponse = httpClient.toBlocking().exchange(request, List::class.java)
+        val httpresponse = httpClient.toBlocking().exchange(request, Argument.listOf(QuakeModel::class.java))
 
         // then
         Assertions.assertEquals(HttpStatus.OK, httpresponse.status)
@@ -100,14 +100,17 @@ class QuakeControllerTest(
         val quakeproperty = QuakeProperty(time = 123456, title = "This is sample quake test", mag = 9.5)
         val quakegeo = QuakeGeometry(coordinates = arrayListOf(5.5, 6.6, 7.7))
         val quakeresponsefeature = QuakeResponseFeature(id = "1234", properties = quakeproperty, geometry = quakegeo)
-        val quakeresponse = QuakeResponse(listOf(quakeresponsefeature))
+        val quakeproperty2 = QuakeProperty(time = 123478, title = "This is sample quake test2", mag = 7.5)
+        val quakegeo2 = QuakeGeometry(coordinates = arrayListOf(4.5, 7.6, 8.7))
+        val quakeresponsefeature2 = QuakeResponseFeature(id = "1235", properties = quakeproperty2, geometry = quakegeo2)
+        val quakeresponse = QuakeResponse(listOf(quakeresponsefeature, quakeresponsefeature2))
 
         // when
         coEvery { quakeService.latestQuake() } returns flowOf(quakeresponse)
 
         val request = HttpRequest.GET<String>("/quake/latest")
 
-        val httpresponse = httpClient.toBlocking().exchange(request, List::class.java)
+        val httpresponse = httpClient.toBlocking().exchange(request, Argument.listOf(QuakeResponse::class.java))
 
         // then
         Assertions.assertEquals(HttpStatus.OK, httpresponse.status)
@@ -166,11 +169,17 @@ class QuakeControllerTest(
         coEvery { quakeService.latestNumberOfQuake(any()) } returns flowOf(quake1, quake2, quake3, quake4)
 
         val request = HttpRequest.GET<String>("/quake/list/$number")
-        val httpresponse = httpClient.toBlocking().exchange(request, Argument.listOf(QuakeModel::class.java))
+
+        var count = 0
+        streamClient.jsonStream(request, Argument.of(QuakeModel::class.java)).asFlow()
+            .collect {
+                logger.info("$it")
+                count += 1
+            }
 
         // then
-        Assertions.assertEquals(4, httpresponse.body()!!.size)
-        logger.info("${httpresponse.body()}")
+        Assertions.assertEquals(4, count)
+
     }
 
 }) {
