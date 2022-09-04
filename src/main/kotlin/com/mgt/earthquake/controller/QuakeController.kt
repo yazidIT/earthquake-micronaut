@@ -15,6 +15,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withContext
 
 @Controller
@@ -40,10 +41,10 @@ class QuakeController (
 
 
     @Post(value = "/quake/addlist")
-    fun addQuakeList(quakelist: QuakeDTOList): Flow<QuakeModel> {
+    suspend fun addQuakeList(quakelist: QuakeDTOList) = withContext(ioDispatcher) {
 
         quakeSqlService.createList(quakelist.quakeList)
-        return quakeService.createList(quakelist.quakeList).flowOn(ioDispatcher)
+        return@withContext quakeService.createList(quakelist.quakeList).toList()
     }
 
 

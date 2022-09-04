@@ -172,16 +172,24 @@ class QuakeControllerIT(
         val quakelist = QuakeDTOList(listOf(quakedto, quakedto2))
 
         val request = HttpRequest.POST<Any>("/quake/addlist", quakelist)
-
-        var count = 0
-        streamClient.jsonStream(request, Argument.of(QuakeModel::class.java)).asFlow()
-            .collect {
-                logger.info("$it")
-                count += 1
-            }
+        val httpresponse = httpClient.toBlocking().exchange(request, Argument.listOf(QuakeModel::class.java))
 
         // then
-        Assertions.assertEquals(2, count)
+        Assertions.assertEquals(HttpStatus.OK, httpresponse.status)
+        Assertions.assertTrue(httpresponse.body.isPresent)
+
+        val data = httpresponse.body.get()
+        logger.info("$data")
+
+//        var count = 0
+//        streamClient.jsonStream(request, Argument.of(QuakeModel::class.java)).asFlow()
+//            .collect {
+//                logger.info("$it")
+//                count += 1
+//            }
+//
+//        // then
+//        Assertions.assertEquals(2, count)
     }
 
     test("GET /quake/list/json/{number} should complete successfully") {

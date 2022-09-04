@@ -84,15 +84,14 @@ class QuakeControllerTest(
 
         val request = HttpRequest.POST<Any>("/quake/addlist", quakelist)
 
-        var count = 0
-        streamClient.jsonStream(request, Argument.of(QuakeModel::class.java)).asFlow()
-            .collect {
-                logger.info("$it")
-                count += 1
-            }
+        val httpresponse = httpClient.toBlocking().exchange(request, Argument.listOf(QuakeModel::class.java))
 
         // then
-        Assertions.assertEquals(2, count)
+        Assertions.assertEquals(HttpStatus.OK, httpresponse.status)
+        Assertions.assertTrue(httpresponse.body.isPresent)
+
+        val data = httpresponse.body.get()
+        logger.info("$data")
     }
 
     test("GET /quake/latest should complete successfully") {
