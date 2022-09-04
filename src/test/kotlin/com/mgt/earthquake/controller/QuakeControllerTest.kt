@@ -79,19 +79,20 @@ class QuakeControllerTest(
             latitude = 3.1234, longitude = 103.3, quakeid = "fwiohfdd1")
 
         // when
-        coEvery { quakeService.createList(any()) } returns flowOf(quake, quake2)
         coEvery { quakeSqlService.createList(any()) } just Runs
+        coEvery { quakeService.createList(any()) } returns flowOf(quake, quake2)
 
         val request = HttpRequest.POST<Any>("/quake/addlist", quakelist)
 
-        val httpresponse = httpClient.toBlocking().exchange(request, Argument.of(QuakeModel::class.java))
+        var count = 0
+        streamClient.jsonStream(request, Argument.of(QuakeModel::class.java)).asFlow()
+            .collect {
+                logger.info("$it")
+                count += 1
+            }
 
         // then
-        Assertions.assertEquals(HttpStatus.OK, httpresponse.status)
-        Assertions.assertTrue(httpresponse.body.isPresent)
-
-        val data = httpresponse.body.get()
-        logger.info("$data")
+        Assertions.assertEquals(2, count)
     }
 
     test("GET /quake/latest should complete successfully") {
@@ -100,7 +101,10 @@ class QuakeControllerTest(
         val quakeproperty = QuakeProperty(time = 123456, title = "This is sample quake test", mag = 9.5)
         val quakegeo = QuakeGeometry(coordinates = arrayListOf(5.5, 6.6, 7.7))
         val quakeresponsefeature = QuakeResponseFeature(id = "1234", properties = quakeproperty, geometry = quakegeo)
-        val quakeresponse = QuakeResponse(listOf(quakeresponsefeature))
+        val quakeproperty2 = QuakeProperty(time = 123478, title = "This is sample quake test2", mag = 7.5)
+        val quakegeo2 = QuakeGeometry(coordinates = arrayListOf(4.5, 7.6, 8.7))
+        val quakeresponsefeature2 = QuakeResponseFeature(id = "1235", properties = quakeproperty2, geometry = quakegeo2)
+        val quakeresponse = QuakeResponse(listOf(quakeresponsefeature, quakeresponsefeature2))
 
         // when
         coEvery { quakeService.latestQuake() } returns flowOf(quakeresponse)

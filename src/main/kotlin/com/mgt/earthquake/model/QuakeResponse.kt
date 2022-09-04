@@ -1,16 +1,17 @@
 package com.mgt.earthquake.model
 
 import io.micronaut.serde.annotation.Serdeable
+import org.bson.codecs.pojo.annotations.BsonCreator
 import org.bson.codecs.pojo.annotations.BsonProperty
 
 @Serdeable
-data class QuakeResponse (
+data class QuakeResponse @BsonCreator constructor(
     @param:BsonProperty("features")
     val features: List<QuakeResponseFeature>
 )
 
 @Serdeable
-data class QuakeResponseFeature (
+data class QuakeResponseFeature @BsonCreator constructor(
     @param:BsonProperty("id")
     val id: String,
     @param:BsonProperty("properties")
@@ -20,7 +21,7 @@ data class QuakeResponseFeature (
 )
 
 @Serdeable
-data class QuakeProperty(
+data class QuakeProperty @BsonCreator constructor(
     @param:BsonProperty("time")
     val time: Long,
     @param:BsonProperty("title")
@@ -30,7 +31,7 @@ data class QuakeProperty(
 )
 
 @Serdeable
-data class QuakeGeometry(
+data class QuakeGeometry @BsonCreator constructor(
     @param:BsonProperty("coordinates")
     val coordinates: ArrayList<Double>
 )

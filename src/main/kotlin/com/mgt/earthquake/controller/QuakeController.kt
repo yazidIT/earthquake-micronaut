@@ -39,15 +39,17 @@ class QuakeController (
     }
 
 
-    @Post(value = "/quake/addlist", produces = [MediaType.APPLICATION_JSON_STREAM])
+    @Post(value = "/quake/addlist")
     fun addQuakeList(quakelist: QuakeDTOList): Flow<QuakeModel> {
 
         quakeSqlService.createList(quakelist.quakeList)
-        return quakeService.createList(quakelist.quakeList)
+        return quakeService.createList(quakelist.quakeList).flowOn(ioDispatcher)
     }
+
 
     @Get(value = "/quake/latest")
     fun latestQuake(): Flow<QuakeResponse> = quakeService.latestQuake().flowOn(ioDispatcher)
+
 
     @Get(value = "/quake/list/json/{number}", produces = [MediaType.APPLICATION_JSON_STREAM])
     fun latestListJsonByNumber(@PathVariable number: Int): Flow<QuakeModel> =
@@ -55,8 +57,8 @@ class QuakeController (
         quakeService.latestNumberOfQuake(number).flowOn(ioDispatcher)
 
 
-    @Get(value = "/quake/list/{number}", produces = [MediaType.APPLICATION_JSON_STREAM])
+    @Get(value = "/quake/list/{number}")
     fun latestListByNumber(@PathVariable number: Int): Flow<QuakeModel> =
 
-        quakeService.latestNumberOfQuake(number).flowOn(Dispatchers.IO)
+        quakeService.latestNumberOfQuake(number).flowOn(ioDispatcher)
 }
