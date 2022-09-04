@@ -92,6 +92,16 @@ class QuakeControllerTest(
 
         val data = httpresponse.body.get()
         logger.info("$data")
+
+//        var count = 0
+//        streamClient.jsonStream(request, Argument.of(QuakeModel::class.java)).asFlow()
+//            .collect {
+//                logger.info("$it")
+//                count += 1
+//            }
+//
+//        // then
+//        Assertions.assertEquals(2, count)
     }
 
     test("GET /quake/latest should complete successfully") {
