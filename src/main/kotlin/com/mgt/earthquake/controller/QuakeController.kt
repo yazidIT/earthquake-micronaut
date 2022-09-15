@@ -41,11 +41,11 @@ class QuakeController (
 
 
     @Post(value = "/quake/addlist")
-    suspend fun addQuakeList(quakelist: QuakeDTOList) = withContext(ioDispatcher) {
+    fun addQuakeList(quakelist: QuakeDTOList) = flow<QuakeModel> {
 
         quakeSqlService.createList(quakelist.quakeList)
-        quakeService.createList(quakelist.quakeList).toList()
-    }
+        quakeService.createList(quakelist.quakeList)
+    }.flowOn(ioDispatcher)
 
 
     @Get(value = "/quake/latest")

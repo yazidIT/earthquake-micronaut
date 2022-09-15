@@ -79,6 +79,7 @@ dependencies {
     testImplementation("org.mock-server:mockserver-netty:5.13.2")
     testImplementation("org.mock-server:mockserver-junit-jupiter:5.13.2")
     testImplementation("io.kotest.extensions:kotest-extensions-mockserver:1.2.1")
+    testImplementation("org.awaitility:awaitility-kotlin:4.2.0")
 }
 
 
