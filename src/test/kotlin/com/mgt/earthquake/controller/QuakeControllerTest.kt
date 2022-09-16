@@ -6,6 +6,7 @@ import com.mgt.earthquake.service.QuakeService
 import com.mgt.earthquake.service.QuakeServiceImpl
 import com.mgt.earthquake.service.QuakeSqlService
 import com.mgt.earthquake.service.QuakeSqlServiceImpl
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.micronaut.core.type.Argument
 import io.micronaut.http.HttpRequest
@@ -65,6 +66,29 @@ class QuakeControllerTest(
 
         val data = httpresponse.body.get()
         logger.info("$data")
+    }
+
+    test("POST /quake/add should throw - quakeService throws Exception") {
+
+        // given
+        val quakedto = QuakeDTO(title = "Quake No 1", magnitude = 6.0, quaketime = "xxx",
+            latitude = 3.1234, longitude = 103.3, quakeid = "fwiohfrwier1")
+        val quake = QuakeModel(title = "Quake No 1", magnitude = 6.0, quaketime = "xxx",
+            latitude = 3.1234, longitude = 103.3, quakeid = "fwiohfrwier1")
+        val quakesql = QuakeRecord(id = 1234L, title = "Quake No 1", magnitude = 6.0, quaketime = "xxx",
+            latitude = 3.1234, longitude = 103.3, quakeid = "fwiohfrwier1")
+
+        // when
+        coEvery { quakeService.create(any()) } throws Exception()
+        coEvery { quakeSqlService.create(any()) } returns quakesql
+
+        val request = HttpRequest.POST<Any>("/quake/add", quakedto)
+
+        shouldThrow<Exception> {
+            httpClient.toBlocking().exchange(request, Argument.of(QuakeModel::class.java))
+        }.printStackTrace()
+
+        // then
     }
 
     test("POST /quake/addlist should complete successfully") {
