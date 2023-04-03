@@ -26,7 +26,7 @@ import kotlinx.coroutines.reactive.asFlow
 import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory
 
-@MicronautTest
+@MicronautTest(transactional = false)
 class QuakeControllerTest(
 
     @Client("/")

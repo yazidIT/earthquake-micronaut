@@ -24,7 +24,7 @@ import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
-@MicronautTest
+@MicronautTest(transactional = false)
 class EarthQuakeClientTest(
 
     var underTest: EarthQuakeClient,

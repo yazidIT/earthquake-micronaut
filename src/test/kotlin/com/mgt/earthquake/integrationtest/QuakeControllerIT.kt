@@ -22,7 +22,7 @@ import kotlinx.coroutines.reactive.asFlow
 import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory
 
-@MicronautTest(transactional = true, environments = ["integrationtest"])
+@MicronautTest(transactional = false, environments = ["integrationtest"])
 class QuakeControllerIT(
 
     @Client("/")

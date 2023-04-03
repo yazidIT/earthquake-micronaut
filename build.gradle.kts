@@ -9,7 +9,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.allopen") version "1.6.21"
     id("org.jetbrains.kotlin.plugin.jpa") version "1.6.21"
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("io.micronaut.application") version "3.5.1"
+    id("io.micronaut.application") version "3.7.7"
     id("nu.studer.jooq") version "7.1.1"
     id("org.sonarqube") version "3.3"
 }
@@ -25,7 +25,7 @@ sonarqube {
     }
 }
 
-version = "0.1"
+version = "0.2"
 group = "com.mgt.earthquake"
 
 val kotlinVersion= project.properties["kotlinVersion"]
@@ -42,18 +42,17 @@ dependencies {
     implementation("jakarta.validation:jakarta.validation-api:3.0.2")
     implementation("io.micronaut:micronaut-jackson-databind")
     implementation("io.micronaut:micronaut-http-client")
+    implementation("io.micronaut.reactor:micronaut-reactor")
 
-    implementation("io.micronaut.mongodb:micronaut-mongo-reactive")
-    implementation("io.micronaut.r2dbc:micronaut-r2dbc-core")
-    implementation("io.micronaut.flyway:micronaut-flyway")
     implementation("io.micronaut.data:micronaut-data-r2dbc")
-    runtimeOnly("io.micronaut.sql:micronaut-jdbc-hikari")
+    implementation("io.micronaut.mongodb:micronaut-mongo-reactive")
+    implementation("io.micronaut.flyway:micronaut-flyway")
+
     implementation("io.micronaut.sql:micronaut-jooq")
     implementation("io.micronaut.data:micronaut-data-mongodb")
 
     implementation("io.micronaut.kotlin:micronaut-kotlin-extension-functions")
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
-    implementation("io.micronaut.reactor:micronaut-reactor")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
@@ -63,14 +62,13 @@ dependencies {
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
     runtimeOnly("ch.qos.logback:logback-classic")
 
-    runtimeOnly("com.h2database:h2")
-    runtimeOnly("io.r2dbc:r2dbc-h2")
+    runtimeOnly("io.micronaut.sql:micronaut-jdbc-hikari")
     runtimeOnly("org.flywaydb:flyway-mysql")
     runtimeOnly("mysql:mysql-connector-java")
     runtimeOnly("dev.miku:r2dbc-mysql")
 
-    testImplementation("org.testcontainers:mongodb:1.17.6")
-    testImplementation("org.testcontainers:testcontainers:1.17.6")
+    testImplementation("org.testcontainers:mongodb")
+    testImplementation("org.testcontainers:testcontainers")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:mysql")
     testImplementation("org.testcontainers:r2dbc")
@@ -78,6 +76,8 @@ dependencies {
     testImplementation("org.mock-server:mockserver-netty:5.13.2")
     testImplementation("org.mock-server:mockserver-junit-jupiter:5.13.2")
     testImplementation("io.kotest.extensions:kotest-extensions-mockserver:1.2.1")
+    testRuntimeOnly("com.h2database:h2")
+    testRuntimeOnly("io.r2dbc:r2dbc-h2")
 }
 
 
@@ -121,11 +121,11 @@ allOpen {
 }
 
 dependencies {
-    jooqGenerator("mysql:mysql-connector-java:8.0.27")
+    jooqGenerator("mysql:mysql-connector-java:8.0.30")
 }
 
 jooq {
-    version.set("3.16.7")
+    version.set("3.16.15")
     edition.set(JooqEdition.OSS)
 
     configurations {
