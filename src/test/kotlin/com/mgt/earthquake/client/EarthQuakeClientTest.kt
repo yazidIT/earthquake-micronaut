@@ -34,8 +34,8 @@ class EarthQuakeClientTest(
 
     val logger = LoggerFactory.getLogger(EarthQuakeClientTest::class.java)
 
-    listener(MockServerListener(5000))
-    val clientAndServer = MockServerClient("localhost", 5000)
+    listener(MockServerListener(8990))
+    val clientAndServer = MockServerClient("localhost", 8990)
 
     test("GET earthquake client should work") {
 

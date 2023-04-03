@@ -69,8 +69,8 @@ dependencies {
     runtimeOnly("mysql:mysql-connector-java")
     runtimeOnly("dev.miku:r2dbc-mysql")
 
-    testImplementation("org.testcontainers:mongodb")
-    testImplementation("org.testcontainers:testcontainers")
+    testImplementation("org.testcontainers:mongodb:1.17.6")
+    testImplementation("org.testcontainers:testcontainers:1.17.6")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:mysql")
     testImplementation("org.testcontainers:r2dbc")
