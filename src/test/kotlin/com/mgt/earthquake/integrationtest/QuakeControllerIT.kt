@@ -3,10 +3,13 @@ package com.mgt.earthquake.integrationtest
 import com.mgt.earthquake.dao.QuakeRepository
 import com.mgt.earthquake.dao.QuakeSqlRepository
 import com.mgt.earthquake.model.QuakeDTO
+import com.mgt.earthquake.model.QuakeDTOList
 import com.mgt.earthquake.model.QuakeModel
+import com.mgt.earthquake.model.QuakeResponse
 import com.mgt.earthquake.service.QuakeService
 import com.mgt.earthquake.service.QuakeSqlService
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 import io.micronaut.core.type.Argument
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
@@ -20,7 +23,7 @@ import kotlinx.coroutines.reactive.asFlow
 import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory
 
-@MicronautTest(transactional = true, environments = ["integrationtest"])
+@MicronautTest(transactional = false, environments = ["integrationtest"])
 class QuakeControllerIT(
 
     @Client("/")
@@ -59,14 +62,15 @@ class QuakeControllerIT(
 
         val request = HttpRequest.GET<String>("/quake/latest")
 
-        val httpresponse: HttpResponse<List<*>> = httpClient.toBlocking().exchange(request, Argument.of(List::class.java))
+        var count = 0
+        streamClient.jsonStream(request, Argument.of(QuakeResponse::class.java)).asFlow()
+            .collect {
+                logger.info("$it")
+                count += 1
+            }
 
         // then
-        Assertions.assertEquals(HttpStatus.OK, httpresponse.status)
-        Assertions.assertTrue(httpresponse.body.isPresent)
-
-        val data = httpresponse.body.get()
-        logger.info("$data")
+        Assertions.assertTrue(count > 0)
     }
 
     test("quakeSqlService create should work") {
@@ -124,12 +128,56 @@ class QuakeControllerIT(
         Assertions.assertTrue(check.isNotEmpty())
 
         // Read data from mysql
-        val resultsql = quakeSqlRepo.findAll()
+        val resultsql = quakeSqlRepo.findAll().toList()
 
-        Assertions.assertEquals(2, resultsql.size)
+        resultsql.size shouldBe 2
 
         val checksql = resultsql.filter { it.quakeid == "us6000asdf" }
         Assertions.assertTrue(checksql.isNotEmpty())
+    }
+
+    test("quakeService createList should work") {
+        // given
+        val quakedto = QuakeDTO(
+            title = "Quake NE Japan", magnitude = 6.5, latitude = 3.1414,
+            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000nbhj"
+        )
+        val quakedto2 = QuakeDTO(
+            title = "Quake NE Japan", magnitude = 6.9, latitude = 11.982,
+            longitude = 78.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000kler"
+        )
+        val quakelist = QuakeDTOList(listOf(quakedto, quakedto2))
+
+        val result = quakeService.createList(quakelist.quakeList).toList()
+
+        // then
+        Assertions.assertNotNull(result)
+        logger.info("$result")
+    }
+
+    test("POST /quake/addlist should complete successfully") {
+
+        // given
+        val quakedto = QuakeDTO(
+            title = "Quake NE Japan", magnitude = 8.5, latitude = 8.1414,
+            longitude = 88.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000klmn"
+        )
+        val quakedto2 = QuakeDTO(
+            title = "Quake NE Japan", magnitude = 6.2, latitude = 6.982,
+            longitude = 65.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000klmm"
+        )
+        val quakelist = QuakeDTOList(listOf(quakedto, quakedto2))
+
+        val request = HttpRequest.POST<Any>("/quake/addlist", quakelist)
+
+        val httpresponse = httpClient.toBlocking().exchange(request, Argument.listOf(QuakeModel::class.java))
+
+        // then
+        Assertions.assertEquals(HttpStatus.OK, httpresponse.status)
+        Assertions.assertTrue(httpresponse.body.isPresent)
+
+        val data = httpresponse.body.get()
+        logger.info("$data")
     }
 
     test("GET /quake/list/json/{number} should complete successfully") {
@@ -157,10 +205,17 @@ class QuakeControllerIT(
         val number = 3
 
         val request = HttpRequest.GET<String>("/quake/list/$number")
-        val httpresponse = httpClient.toBlocking().exchange(request, Argument.listOf(QuakeModel::class.java))
 
         // then
-        Assertions.assertEquals(3, httpresponse.body()!!.size)
-        logger.info("${httpresponse.body()}")
+        var count = 0
+        streamClient.jsonStream(request, Argument.of(QuakeModel::class.java)).asFlow()
+            .collect {
+                logger.info("$it")
+                count += 1
+            }
+
+        // then
+        Assertions.assertEquals(3, count)
+
     }
 })

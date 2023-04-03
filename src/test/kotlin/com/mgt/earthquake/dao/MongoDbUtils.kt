@@ -6,7 +6,7 @@ import org.testcontainers.utility.DockerImageName
 object MongoDbUtils {
 
     var mongoDBContainer: MongoDBContainer =
-        MongoDBContainer(DockerImageName.parse("mongo:4.4"))
+        MongoDBContainer(DockerImageName.parse("mongo:6"))
             .withExposedPorts(27017)
 
     fun startMongoDb() {

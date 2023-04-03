@@ -5,7 +5,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 import org.junit.jupiter.api.Assertions
 
-@MicronautTest
+@MicronautTest(transactional = false)
 class QuakeModelTest (
 
     val objectMapper: ObjectMapper,

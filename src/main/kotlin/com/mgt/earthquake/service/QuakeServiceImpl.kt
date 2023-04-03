@@ -7,8 +7,6 @@ import com.mgt.earthquake.model.QuakeModel
 import com.mgt.earthquake.model.QuakeResponse
 import jakarta.inject.Singleton
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.toList
-import org.bson.types.ObjectId
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.YearMonth

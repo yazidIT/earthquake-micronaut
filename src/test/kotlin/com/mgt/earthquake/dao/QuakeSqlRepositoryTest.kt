@@ -2,8 +2,10 @@ package com.mgt.earthquake.dao
 
 import com.mgt.earthquake.jooqmodel.tables.pojos.Quake
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 import io.micronaut.context.ApplicationContext
 import io.micronaut.test.support.TestPropertyProvider
+import kotlinx.coroutines.flow.toList
 import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory
 
@@ -37,8 +39,9 @@ class QuakeSqlRepositoryTest: FunSpec({
 
     test("list all should work") {
 
-        val result = underTest.findAll()
-        Assertions.assertTrue(result.isEmpty())
+        val result = underTest.findAll().toList()
+
+        result shouldBe emptyList()
     }
 
     test("create and delete quake should work") {
@@ -97,9 +100,9 @@ class QuakeSqlRepositoryTest: FunSpec({
             quaketime = "2022-07-22T14:44:47.267000", title = "Quake Item in Test Western Malaysia")
 
         underTest.createQuakes(listOf(quakepojo1, quakepojo2))
-        val result = underTest.findAll()
+        val result = underTest.findAll().toList()
 
-        Assertions.assertEquals(2, result.size)
+        result.size shouldBe 2
     }
 
     test("create multiple quakes and delete all but one should work") {
@@ -118,9 +121,9 @@ class QuakeSqlRepositoryTest: FunSpec({
 
         val listtodelete = listOf(quakelistrecord[0]!!.id!!, quakelistrecord[1]!!.id!!, quakelistrecord[2]!!.id!!)
         underTest.delete(listtodelete)
-        val lastlist = underTest.findAll()
+        val lastlist = underTest.findAll().toList()
 
-        Assertions.assertEquals(1, lastlist.size)
+        lastlist.size shouldBe 1
     }
 
 }), TestPropertyProvider {

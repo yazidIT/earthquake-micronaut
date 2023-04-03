@@ -39,7 +39,7 @@ object PostgresSqlDbUtils {
         val fwConfiguration = ClassicConfiguration()
         fwConfiguration.setDataSource(mySqlDbUri, mySqlDbUsername, mySqlDbPassword)
         fwConfiguration.setLocations(
-            Location("filesystem:/home/yazid/development/earthquake-micronaut/src/test/resources/db/migration")
+            Location("classpath:/db/migration")
         )
 
         val flyway = Flyway(fwConfiguration)

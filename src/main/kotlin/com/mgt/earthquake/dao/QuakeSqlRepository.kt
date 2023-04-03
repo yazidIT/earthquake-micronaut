@@ -7,6 +7,10 @@ import io.micronaut.data.r2dbc.annotation.R2dbcRepository
 import io.micronaut.transaction.annotation.ReadOnly
 import io.micronaut.transaction.annotation.TransactionalAdvice
 import jakarta.inject.Named
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.reactive.asFlow
+import kotlinx.coroutines.reactive.awaitFirstOrNull
+import kotlinx.coroutines.reactive.awaitLast
 import org.jooq.DSLContext
 import org.jooq.impl.DSL.row
 import org.slf4j.LoggerFactory
@@ -24,39 +28,38 @@ class QuakeSqlRepository (
 
 
     @ReadOnly
-    fun findAll(): List<Quake> {
+    fun findAll(): Flow<Quake> {
 
         return Flux.from(
             dslContext.selectFrom(QUAKE))
             .map { it.into(Quake::class.java) }
-            .toStream()
-            .toList()
+            .asFlow()
     }
 
 
     @ReadOnly
-    fun findById(id: Long): Quake? {
+    suspend fun findById(id: Long): Quake? {
 
         return Mono.from(
             dslContext.selectFrom(QUAKE)
                 .where(QUAKE.ID.eq(id)))
             .map { it.into(Quake::class.java) }
-            .block()
+            .awaitFirstOrNull()
     }
 
     @ReadOnly
-    fun findByQuakeId(quakeid: String): Quake? {
+    suspend fun findByQuakeId(quakeid: String): Quake? {
 
         return Mono.from(
             dslContext.selectFrom(QUAKE)
                 .where(QUAKE.QUAKEID.eq(quakeid)))
             .map { it.into(Quake::class.java) }
-            .block()
+            .awaitFirstOrNull()
     }
 
 
     @Transactional
-    fun create(quakePojo: Quake): QuakeRecord? {
+    suspend fun create(quakePojo: Quake): QuakeRecord? {
 
         with(QUAKE) {
             return Mono.from(
@@ -70,13 +73,13 @@ class QuakeSqlRepository (
                             .where(ID.eq(it[ID]))
                     )
                 }
-                .block()
+                .awaitFirstOrNull()
         }
     }
 
 
     @Transactional
-    fun update(quakePojo: Quake): QuakeRecord? {
+    suspend fun update(quakePojo: Quake): QuakeRecord? {
 
         with(QUAKE) {
             return Mono.from(
@@ -96,33 +99,33 @@ class QuakeSqlRepository (
                             .where(ID.eq(it[ID]))
                     )
                 }
-                .block()
+                .awaitFirstOrNull()
         }
     }
 
 
     @Transactional
-    fun createQuakes(quakePojos : List<Quake>) = quakePojos.map { create(it) }
+    suspend fun createQuakes(quakePojos : List<Quake>) = quakePojos.map { create(it) }
 
 
     @Transactional
-    fun delete(id: Long) = delete(listOf(id))
+    suspend fun delete(id: Long) = delete(listOf(id))
 
 
     @Transactional
-    fun delete(ids: List<Long>) {
+    suspend fun delete(ids: List<Long>) {
 
         Mono.from(
             dslContext.deleteFrom(QUAKE).where(QUAKE.ID.`in`(ids)))
-            .block()
+            .awaitLast()
     }
 
 
     @Transactional
-    fun deleteAll() {
+    suspend fun deleteAll() {
 
         Mono.from(
             dslContext.deleteFrom(QUAKE))
-            .block()
+            .awaitLast()
     }
 }

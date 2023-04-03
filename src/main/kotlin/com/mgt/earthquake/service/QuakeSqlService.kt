@@ -4,6 +4,6 @@ import com.mgt.earthquake.jooqmodel.tables.records.QuakeRecord
 import com.mgt.earthquake.model.QuakeDTO
 
 interface QuakeSqlService {
-    fun create(quakedto: QuakeDTO): QuakeRecord?
-    fun createList(quakeList: List<QuakeDTO>)
+    suspend fun create(quakedto: QuakeDTO): QuakeRecord?
+    suspend fun createList(quakeList: List<QuakeDTO>)
 }

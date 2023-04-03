@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
 
-@MicronautTest
+@MicronautTest(transactional = false)
 class QuakeServiceImplTest(
 
     val underTest: QuakeServiceImpl
