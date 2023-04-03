@@ -38,24 +38,24 @@ open class QuakeRecord() : UpdatableRecordImpl<QuakeRecord>(Quake.QUAKE), Record
 
     @get:Id
     @get:GeneratedValue(strategy = GenerationType.IDENTITY)
-    @get:Column(name = "id", nullable = false, precision = 64)
+    @get:Column(name = "id", nullable = false)
     var id: Long?
         set(value): Unit = set(0, value)
         get(): Long? = get(0) as Long?
 
-    @get:Column(name = "latitude", nullable = false, precision = 53)
+    @get:Column(name = "latitude", nullable = false)
     @get:NotNull
     var latitude: Double?
         set(value): Unit = set(1, value)
         get(): Double? = get(1) as Double?
 
-    @get:Column(name = "longitude", nullable = false, precision = 53)
+    @get:Column(name = "longitude", nullable = false)
     @get:NotNull
     var longitude: Double?
         set(value): Unit = set(2, value)
         get(): Double? = get(2) as Double?
 
-    @get:Column(name = "magnitude", nullable = false, precision = 53)
+    @get:Column(name = "magnitude", nullable = false)
     @get:NotNull
     var magnitude: Double?
         set(value): Unit = set(3, value)

@@ -14,7 +14,7 @@ services:
     ports:
       - "27017:27017"
   database1:
-    image: postgres:12
+    image: postgres:14
     container_name: postgresdb
     environment:
       POSTGRES_DB: quakedb

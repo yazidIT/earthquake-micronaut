@@ -123,7 +123,7 @@ allOpen {
 }
 
 dependencies {
-    jooqGenerator("org.postgresql:postgresql:42.4.0")
+    jooqGenerator("org.postgresql:postgresql:42.5.4")
 }
 
 jooq {

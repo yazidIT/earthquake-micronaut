@@ -13,7 +13,7 @@ object PostgresSqlDbUtils {
 
     private var mySqlDBContainer: PostgreSQLContainer<*> =
 
-        PostgreSQLContainer(DockerImageName.parse("postgres:12"))
+        PostgreSQLContainer(DockerImageName.parse("postgres:14"))
             .withExposedPorts(5432)
             .withUsername("test")
             .withPassword("test")

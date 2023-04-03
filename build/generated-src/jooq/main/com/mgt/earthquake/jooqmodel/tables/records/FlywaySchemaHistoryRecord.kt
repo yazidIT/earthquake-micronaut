@@ -37,7 +37,7 @@ import org.jooq.impl.UpdatableRecordImpl
 open class FlywaySchemaHistoryRecord() : UpdatableRecordImpl<FlywaySchemaHistoryRecord>(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY), Record10<Int?, String?, String?, String?, String?, Int?, String?, LocalDateTime?, Int?, Boolean?> {
 
     @get:Id
-    @get:Column(name = "installed_rank", nullable = false, precision = 32)
+    @get:Column(name = "installed_rank", nullable = false)
     @get:NotNull
     var installedRank: Int?
         set(value): Unit = set(0, value)
@@ -70,7 +70,7 @@ open class FlywaySchemaHistoryRecord() : UpdatableRecordImpl<FlywaySchemaHistory
         set(value): Unit = set(4, value)
         get(): String? = get(4) as String?
 
-    @get:Column(name = "checksum", precision = 32)
+    @get:Column(name = "checksum")
     var checksum: Int?
         set(value): Unit = set(5, value)
         get(): Int? = get(5) as Int?
@@ -87,7 +87,7 @@ open class FlywaySchemaHistoryRecord() : UpdatableRecordImpl<FlywaySchemaHistory
         set(value): Unit = set(7, value)
         get(): LocalDateTime? = get(7) as LocalDateTime?
 
-    @get:Column(name = "execution_time", nullable = false, precision = 32)
+    @get:Column(name = "execution_time", nullable = false)
     @get:NotNull
     var executionTime: Int?
         set(value): Unit = set(8, value)

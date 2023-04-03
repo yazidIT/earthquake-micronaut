@@ -31,15 +31,15 @@ import java.io.Serializable
 data class Quake(
     @get:Id
     @get:GeneratedValue(strategy = GenerationType.IDENTITY)
-    @get:Column(name = "id", nullable = false, precision = 64)
+    @get:Column(name = "id", nullable = false)
     var id: Long? = null,
-    @get:Column(name = "latitude", nullable = false, precision = 53)
+    @get:Column(name = "latitude", nullable = false)
     @get:NotNull
     var latitude: Double? = null,
-    @get:Column(name = "longitude", nullable = false, precision = 53)
+    @get:Column(name = "longitude", nullable = false)
     @get:NotNull
     var longitude: Double? = null,
-    @get:Column(name = "magnitude", nullable = false, precision = 53)
+    @get:Column(name = "magnitude", nullable = false)
     @get:NotNull
     var magnitude: Double? = null,
     @get:Column(name = "quakeid", nullable = false, length = 200)
