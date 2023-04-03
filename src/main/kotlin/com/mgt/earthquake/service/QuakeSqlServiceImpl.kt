@@ -16,7 +16,7 @@ class QuakeSqlServiceImpl (
     private val quakeRepo: QuakeSqlRepository
 ) : QuakeSqlService {
 
-    override fun create(quakedto: QuakeDTO): QuakeRecord? {
+    override suspend fun create(quakedto: QuakeDTO): QuakeRecord? {
 
         val quakeitem = Quake(
             title = quakedto.title,
@@ -30,7 +30,7 @@ class QuakeSqlServiceImpl (
         return quakeRepo.create(quakeitem)
     }
 
-    override fun createList(quakeList: List<QuakeDTO>) {
+    override suspend fun createList(quakeList: List<QuakeDTO>) {
 
         val createlist = quakeList
             .map {

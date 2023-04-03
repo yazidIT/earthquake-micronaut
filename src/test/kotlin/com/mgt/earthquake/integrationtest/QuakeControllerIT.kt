@@ -9,6 +9,7 @@ import com.mgt.earthquake.model.QuakeResponse
 import com.mgt.earthquake.service.QuakeService
 import com.mgt.earthquake.service.QuakeSqlService
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 import io.micronaut.core.type.Argument
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
@@ -127,9 +128,9 @@ class QuakeControllerIT(
         Assertions.assertTrue(check.isNotEmpty())
 
         // Read data from mysql
-        val resultsql = quakeSqlRepo.findAll()
+        val resultsql = quakeSqlRepo.findAll().toList()
 
-        Assertions.assertEquals(2, resultsql.size)
+        resultsql.size shouldBe 2
 
         val checksql = resultsql.filter { it.quakeid == "us6000asdf" }
         Assertions.assertTrue(checksql.isNotEmpty())
