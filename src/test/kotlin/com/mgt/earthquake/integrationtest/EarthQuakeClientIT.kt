@@ -10,7 +10,7 @@ import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
-@MicronautTest(startApplication = false, environments = ["integrationtest"])
+@MicronautTest(startApplication = false, environments = ["integrationtest"], transactional = false)
 class EarthQuakeClientIT(
 
     var underTest: EarthQuakeClient,

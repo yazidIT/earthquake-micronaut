@@ -7,7 +7,7 @@ import org.bson.codecs.pojo.ClassModel
 import org.bson.types.ObjectId
 import org.junit.jupiter.api.Assertions
 
-@MicronautTest
+@MicronautTest(transactional = false)
 class QuakeModelTest (
 
     val objectMapper: ObjectMapper,
