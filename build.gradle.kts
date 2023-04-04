@@ -118,7 +118,8 @@ allOpen {
         "jakarta.inject.Singleton",
         "javax.persistence.Entity",
         "io.micronaut.data.annotation.MappedEntity",
-        "javax.persistence.MappedSuperclass"
+        "javax.persistence.MappedSuperclass",
+        "io.micronaut.serde.annotation.Serdeable",
     )
 }
 
@@ -182,8 +183,8 @@ tasks.named<JooqGenerate>("generateJooq") { allInputsDeclared.set(true) }
 configurations.all {
     resolutionStrategy.dependencySubstitution {
         substitute(module("io.micronaut:micronaut-jackson-databind"))
-            .using(module("io.micronaut.serde:micronaut-serde-bson:1.3.0"))
+            .using(module("io.micronaut.serde:micronaut-serde-bson:1.5.2"))
         substitute(module("io.micronaut:micronaut-jackson-core"))
-            .using(module("io.micronaut.serde:micronaut-serde-bson:1.3.0"))
+            .using(module("io.micronaut.serde:micronaut-serde-bson:1.5.2"))
     }
 }
