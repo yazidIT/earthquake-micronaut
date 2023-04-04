@@ -1,5 +1,6 @@
 package com.mgt.earthquake.model
 
+import io.micronaut.core.annotation.Creator
 import io.micronaut.data.annotation.GeneratedValue
 import io.micronaut.data.annotation.Id
 import io.micronaut.data.annotation.MappedEntity
@@ -11,11 +12,11 @@ import org.bson.types.ObjectId
 
 @Serdeable
 @MappedEntity(value = "quake")
-data class QuakeModel @BsonCreator constructor(
+data class QuakeModel @Creator @BsonCreator constructor(
 
-    @field:Id
-    @param:BsonProperty("id")
     @GeneratedValue
+    @field:Id
+    @param:BsonProperty("_id")
     var id: ObjectId? = null,
 
     @param:BsonProperty("title")

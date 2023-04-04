@@ -3,6 +3,7 @@ package com.mgt.earthquake.dao
 import com.mgt.earthquake.dao.MongoDbUtils.mongoDbUri
 import com.mgt.earthquake.model.QuakeModel
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 import io.micronaut.context.ApplicationContext
 import io.micronaut.test.support.TestPropertyProvider
 import kotlinx.coroutines.flow.toList
@@ -170,14 +171,16 @@ class QuakeRepositoryTest(
         val result = underTest.findLatestNumber(2).toList()
 
         // then
-        Assertions.assertEquals(2, result.size)
+        result.size shouldBe 2
         logger.info("$result")
+        result[0].quakeid shouldBe quake4.quakeid
+        result[1].quakeid shouldBe quake3.quakeid
 
         val finalcount = result.filter { it.quakeid == "us6000hfxn" || it.quakeid == "us6000hfjl" }
             .map { logger.info("$it") }
             .count()
 
-        Assertions.assertEquals(2, finalcount)
+        finalcount shouldBe 2
     }
 
 }), TestPropertyProvider {
