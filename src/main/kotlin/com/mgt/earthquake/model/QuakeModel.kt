@@ -18,7 +18,7 @@ data class QuakeModel @Creator @BsonCreator constructor(
 
     @GeneratedValue
     @field:Id
-    @param:BsonProperty("_id") @param:BsonId
+    @param:BsonId
     @field:Nullable
     var id: ObjectId? = null,
 
