@@ -41,21 +41,33 @@ class QuakeSerdes: Serde<QuakeModel> {
     ): QuakeModel? {
 
         decoder.decodeObject(type).use {
-            it.decodeKey()
-            val objectidStr = it.decodeString()
-            val objectId = ObjectId(objectidStr)
-            it.decodeKey()
-            val title = it.decodeString()
-            it.decodeKey()
-            val magnitude = it.decodeDouble()
-            it.decodeKey()
-            val quaketime = it.decodeString()
-            it.decodeKey()
-            val latitude = it.decodeDouble()
-            it.decodeKey()
-            val longitude = it.decodeDouble()
-            it.decodeKey()
-            val quakeid = it.decodeString()
+
+            var objectId: ObjectId? = null
+            var title: String = ""
+            var magnitude: Double = 0.0
+            var quaketime: String = ""
+            var latitude: Double = 0.0
+            var longitude: Double = 0.0
+            var quakeid: String = ""
+
+            var objectKey = it.decodeKey()
+            while( objectKey != null) {
+
+                when (objectKey) {
+                    "id" -> {
+                        val objectidStr = it.decodeString()
+                        objectId = ObjectId(objectidStr)
+                    }
+
+                    "title" -> title = it.decodeString()
+                    "magnitude" -> magnitude = it.decodeDouble()
+                    "quaketime" -> quaketime = it.decodeString()
+                    "latitude" -> latitude = it.decodeDouble()
+                    "longitude" -> longitude = it.decodeDouble()
+                    "quakeid" -> quakeid = it.decodeString()
+                }
+                objectKey = it.decodeKey()
+            }
 
             return QuakeModel(objectId, title, magnitude, quaketime, latitude, longitude, quakeid)
         }
