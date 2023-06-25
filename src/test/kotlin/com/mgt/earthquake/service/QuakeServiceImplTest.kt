@@ -2,10 +2,17 @@ package com.mgt.earthquake.service
 
 import com.mgt.earthquake.client.EarthQuakeClient
 import com.mgt.earthquake.dao.QuakeRepository
+import com.mgt.earthquake.model.QuakeResponse
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 import io.micronaut.test.annotation.MockBean
+import io.micronaut.test.extensions.kotest5.MicronautKotest5Extension.getMock
 import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.toList
 import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
@@ -13,7 +20,9 @@ import java.time.LocalDateTime
 @MicronautTest(transactional = false)
 class QuakeServiceImplTest(
 
-    val underTest: QuakeServiceImpl
+    val underTest: QuakeServiceImpl,
+
+    val quakeClient: EarthQuakeClient
 
 ) : FunSpec({
 
@@ -74,6 +83,23 @@ class QuakeServiceImplTest(
         logger.info(result2)
         Assertions.assertTrue(result.contains("2020-02-29"))
         Assertions.assertTrue(result2.contains("2020-02-29"))
+    }
+
+    test("latest quake should work - empty list from earthquake portal") {
+
+        getMock(quakeClient)
+        // given
+
+        // when
+        coEvery { quakeClient.getTopEarthquakeForToday(any(), any(), any(), any(), any(), any(), any()) } returns flowOf(
+            QuakeResponse(features = emptyList())
+        )
+
+        val result = underTest.latestQuake().toList()
+
+        // then
+        result.size shouldBe 1
+        result[0].features.size shouldBe 0
     }
 
 }) {

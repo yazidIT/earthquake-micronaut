@@ -7,7 +7,7 @@ import org.bson.codecs.pojo.annotations.BsonProperty
 @Serdeable
 data class QuakeResponse @BsonCreator constructor(
     @param:BsonProperty("features")
-    val features: List<QuakeResponseFeature>
+    val features: List<QuakeResponseFeature> = emptyList()
 )
 
 @Serdeable
@@ -33,5 +33,5 @@ data class QuakeProperty @BsonCreator constructor(
 @Serdeable
 data class QuakeGeometry @BsonCreator constructor(
     @param:BsonProperty("coordinates")
-    val coordinates: ArrayList<Double>
+    val coordinates: ArrayList<Double> = ArrayList()
 )
