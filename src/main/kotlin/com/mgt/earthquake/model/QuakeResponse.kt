@@ -6,7 +6,7 @@ import io.micronaut.serde.annotation.Serdeable
 @Serdeable
 data class QuakeResponse (
     @param:JsonProperty("features")
-    val features: List<QuakeResponseFeature>
+    val features: List<QuakeResponseFeature> = emptyList()
 )
 
 @Serdeable
@@ -32,5 +32,5 @@ data class QuakeProperty(
 @Serdeable
 data class QuakeGeometry(
     @param:JsonProperty("coordinates")
-    val coordinates: ArrayList<Double>
+    val coordinates: ArrayList<Double> = ArrayList()
 )

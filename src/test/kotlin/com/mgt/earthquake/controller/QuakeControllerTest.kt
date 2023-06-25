@@ -21,6 +21,7 @@ import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.just
 import io.mockk.mockk
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.reactive.asFlow
 import org.junit.jupiter.api.Assertions
@@ -131,6 +132,25 @@ class QuakeControllerTest(
 
         // when
         coEvery { quakeService.latestQuake() } returns flowOf(quakeresponse)
+
+        val request = HttpRequest.GET<String>("/quake/latest")
+
+        val httpresponse = httpClient.toBlocking().exchange(request, Argument.listOf(QuakeResponse::class.java))
+
+        // then
+        Assertions.assertEquals(HttpStatus.OK, httpresponse.status)
+        Assertions.assertTrue(httpresponse.body.isPresent)
+
+        val data = httpresponse.body.get()
+        logger.info("$data")
+    }
+
+    test("GET /quake/latest should complete successfully - empty list return from earthquake portal") {
+
+        // given
+
+        // when
+        coEvery { quakeService.latestQuake() } returns flowOf(QuakeResponse(features = emptyList()))
 
         val request = HttpRequest.GET<String>("/quake/latest")
 
