@@ -8,6 +8,7 @@ import com.mgt.earthquake.service.QuakeSqlService
 import com.mgt.earthquake.service.QuakeSqlServiceImpl
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 import io.micronaut.core.type.Argument
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpStatus
@@ -21,9 +22,9 @@ import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.just
 import io.mockk.mockk
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.reactive.asFlow
+import org.bson.types.ObjectId
 import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory
 
@@ -37,7 +38,7 @@ class QuakeControllerTest(
     val streamClient: StreamingHttpClient,
 
     val quakeService: QuakeService,
-    val quakeSqlService: QuakeSqlService
+    val quakeSqlService: QuakeSqlService,
 
 ) : FunSpec({
 
@@ -48,7 +49,7 @@ class QuakeControllerTest(
         // given
         val quakedto = QuakeDTO(title = "Quake No 1", magnitude = 6.0, quaketime = "xxx",
             latitude = 3.1234, longitude = 103.3, quakeid = "fwiohfrwier1")
-        val quake = QuakeModel(title = "Quake No 1", magnitude = 6.0, quaketime = "xxx",
+        val quake = QuakeModel(id = ObjectId(), title = "Quake No 1", magnitude = 6.0, quaketime = "xxx",
             latitude = 3.1234, longitude = 103.3, quakeid = "fwiohfrwier1")
         val quakesql = QuakeRecord(id = 1234L, title = "Quake No 1", magnitude = 6.0, quaketime = "xxx",
             latitude = 3.1234, longitude = 103.3, quakeid = "fwiohfrwier1")
@@ -66,7 +67,9 @@ class QuakeControllerTest(
         Assertions.assertTrue(httpresponse.body.isPresent)
 
         val data = httpresponse.body.get()
+
         logger.info("$data")
+        data.title shouldBe quake.title
     }
 
     test("POST /quake/add should throw - quakeService throws Exception") {

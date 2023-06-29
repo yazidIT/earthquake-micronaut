@@ -14,7 +14,6 @@ import org.bson.types.ObjectId
 @MappedEntity(value = "quake")
 data class QuakeModel @Creator @BsonCreator constructor(
 
-    @GeneratedValue
     @field:Id
     @param:BsonProperty("_id")
     var id: ObjectId? = null,
