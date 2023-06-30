@@ -83,16 +83,17 @@ class QuakeControllerTest(
             latitude = 3.1234, longitude = 103.3, quakeid = "fwiohfrwier1")
 
         // when
-        coEvery { quakeService.create(any()) } throws Exception()
+        coEvery { quakeService.create(any()) } throws Exception("Test Exception")
         coEvery { quakeSqlService.create(any()) } returns quakesql
 
         val request = HttpRequest.POST<Any>("/quake/add", quakedto)
 
-        shouldThrow<Exception> {
+        val exception = shouldThrow<Exception> {
             httpClient.toBlocking().exchange(request, Argument.of(QuakeModel::class.java))
-        }.printStackTrace()
+        }
 
         // then
+        exception.message shouldBe "Internal Server Error"
     }
 
     test("POST /quake/addlist should complete successfully") {
