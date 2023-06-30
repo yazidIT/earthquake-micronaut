@@ -36,11 +36,12 @@ repositories {
 dependencies {
     kapt("io.micronaut:micronaut-http-validation")
     kapt("io.micronaut.data:micronaut-data-document-processor")
+    kapt("io.micronaut.serde:micronaut-serde-processor")
 
+    implementation("io.micronaut.serde:micronaut-serde-bson")
     implementation("jakarta.annotation:jakarta.annotation-api")
     implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
     implementation("jakarta.validation:jakarta.validation-api:3.0.2")
-    implementation("io.micronaut:micronaut-jackson-databind")
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut.reactor:micronaut-reactor")
 
@@ -59,7 +60,6 @@ dependencies {
 
     implementation("io.micronaut:micronaut-validation")
 
-    runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
     runtimeOnly("ch.qos.logback:logback-classic")
 
     runtimeOnly("io.micronaut.sql:micronaut-jdbc-hikari")
@@ -78,6 +78,7 @@ dependencies {
     testImplementation("org.mock-server:mockserver-netty:5.13.2")
     testImplementation("org.mock-server:mockserver-junit-jupiter:5.13.2")
     testImplementation("io.kotest.extensions:kotest-extensions-mockserver:1.2.1")
+    testImplementation("org.awaitility:awaitility-kotlin:4.2.0")
     testRuntimeOnly("com.h2database:h2")
     testRuntimeOnly("io.r2dbc:r2dbc-h2")
 }
@@ -118,7 +119,8 @@ allOpen {
         "jakarta.inject.Singleton",
         "javax.persistence.Entity",
         "io.micronaut.data.annotation.MappedEntity",
-        "javax.persistence.MappedSuperclass"
+        "javax.persistence.MappedSuperclass",
+        "io.micronaut.serde.annotation.Serdeable",
     )
 }
 
@@ -178,3 +180,12 @@ jooq {
 }
 
 tasks.named<JooqGenerate>("generateJooq") { allInputsDeclared.set(true) }
+
+configurations.all {
+    resolutionStrategy.dependencySubstitution {
+        substitute(module("io.micronaut:micronaut-jackson-databind"))
+            .using(module("io.micronaut.serde:micronaut-serde-bson:1.5.2"))
+        substitute(module("io.micronaut:micronaut-jackson-core"))
+            .using(module("io.micronaut.serde:micronaut-serde-bson:1.5.2"))
+    }
+}

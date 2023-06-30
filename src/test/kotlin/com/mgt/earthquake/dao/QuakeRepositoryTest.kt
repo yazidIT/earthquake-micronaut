@@ -10,9 +10,7 @@ import kotlinx.coroutines.flow.toList
 import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory
 
-class QuakeRepositoryTest(
-
-): FunSpec({
+class QuakeRepositoryTest: FunSpec({
 
     val logger = LoggerFactory.getLogger(QuakeRepositoryTest::class.java)
 

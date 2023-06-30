@@ -18,6 +18,10 @@ import io.micronaut.http.client.HttpClient
 import io.micronaut.http.client.StreamingHttpClient
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.just
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.reactive.asFlow
 import org.junit.jupiter.api.Assertions
@@ -42,13 +46,13 @@ class QuakeControllerIT(
 
     beforeSpec {
         val quake1 = QuakeModel(title = "Quake NE Japan1", magnitude = 6.5, latitude = 3.1414,
-            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000hfxm")
+            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000+00:00", quakeid = "us6000hfxm")
         val quake2 = QuakeModel(title = "Quake NE Japan2", magnitude = 6.9, latitude = 11.73455,
-            longitude = 90.232323, quaketime = "2022-05-22T06:15:23.756000", quakeid = "us6000hfjk")
+            longitude = 90.232323, quaketime = "2022-05-22T06:15:23.756000+00:00", quakeid = "us6000hfjk")
         val quake3 = QuakeModel(title = "Quake NE Japan3", magnitude = 6.5, latitude = 3.7788,
-            longitude = 67.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000hfxn")
+            longitude = 67.4534, quaketime = "2022-04-22T06:15:23.756000+00:00", quakeid = "us6000hfxn")
         val quake4 = QuakeModel(title = "Quake NE Japan4", magnitude = 6.9, latitude = 5.73455,
-            longitude = 72.232323, quaketime = "2022-05-22T06:15:23.756000", quakeid = "us6000hfjl")
+            longitude = 72.232323, quaketime = "2022-05-22T06:15:23.756000+00:00", quakeid = "us6000hfjl")
 
         quakeRepo.saveAll(listOf(quake1, quake2, quake3, quake4)).toList()
 
@@ -77,7 +81,7 @@ class QuakeControllerIT(
         // given
         val quakedto = QuakeDTO(
             title = "Quake NE Japan", magnitude = 6.5, latitude = 3.1414,
-            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000hfxa"
+            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000+00:00", quakeid = "us6000hfxa"
         )
 
         val result = quakeSqlService.create(quakedto)
@@ -91,7 +95,7 @@ class QuakeControllerIT(
         // given
         val quakedto = QuakeDTO(
             title = "Quake NE Japan", magnitude = 6.5, latitude = 3.1414,
-            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000nbhj"
+            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000+00:00", quakeid = "us6000nbhj"
         )
 
         val result = quakeService.create(quakedto)
@@ -106,7 +110,7 @@ class QuakeControllerIT(
         // given
         val quakedto = QuakeDTO(
             title = "Quake NE Japan", magnitude = 6.5, latitude = 3.1414,
-            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000asdf"
+            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000+00:00", quakeid = "us6000asdf"
         )
 
         val request = HttpRequest.POST("/quake/add", quakedto)
@@ -140,11 +144,11 @@ class QuakeControllerIT(
         // given
         val quakedto = QuakeDTO(
             title = "Quake NE Japan", magnitude = 6.5, latitude = 3.1414,
-            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000nbhj"
+            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000+00:00", quakeid = "us6000nbhj"
         )
         val quakedto2 = QuakeDTO(
             title = "Quake NE Japan", magnitude = 6.9, latitude = 11.982,
-            longitude = 78.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000kler"
+            longitude = 78.4534, quaketime = "2022-04-22T06:15:23.756000+00:00", quakeid = "us6000kler"
         )
         val quakelist = QuakeDTOList(listOf(quakedto, quakedto2))
 
@@ -160,16 +164,15 @@ class QuakeControllerIT(
         // given
         val quakedto = QuakeDTO(
             title = "Quake NE Japan", magnitude = 8.5, latitude = 8.1414,
-            longitude = 88.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000klmn"
+            longitude = 88.4534, quaketime = "2022-04-22T06:15:23.756000+00:00", quakeid = "us6000klmn"
         )
         val quakedto2 = QuakeDTO(
             title = "Quake NE Japan", magnitude = 6.2, latitude = 6.982,
-            longitude = 65.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000klmm"
+            longitude = 65.4534, quaketime = "2022-04-22T06:15:23.756000+00:00", quakeid = "us6000klmm"
         )
         val quakelist = QuakeDTOList(listOf(quakedto, quakedto2))
 
         val request = HttpRequest.POST<Any>("/quake/addlist", quakelist)
-
         val httpresponse = httpClient.toBlocking().exchange(request, Argument.listOf(QuakeModel::class.java))
 
         // then
@@ -178,6 +181,16 @@ class QuakeControllerIT(
 
         val data = httpresponse.body.get()
         logger.info("$data")
+
+//        var count = 0
+//        streamClient.jsonStream(request, Argument.of(QuakeModel::class.java)).asFlow()
+//            .collect {
+//                logger.info("$it")
+//                count += 1
+//            }
+//
+//        // then
+//        Assertions.assertEquals(2, count)
     }
 
     test("GET /quake/list/json/{number} should complete successfully") {

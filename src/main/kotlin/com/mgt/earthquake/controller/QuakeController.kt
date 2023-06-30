@@ -13,10 +13,9 @@ import io.micronaut.http.annotation.PathVariable
 import io.micronaut.http.annotation.Post
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
+import org.slf4j.LoggerFactory
 
 @Controller
 class QuakeController (
@@ -24,6 +23,7 @@ class QuakeController (
     private val quakeSqlService: QuakeSqlService
 ) {
 
+    private val logger = LoggerFactory.getLogger(this::class.java)
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 
     @Get(value = "/test")
@@ -36,16 +36,16 @@ class QuakeController (
     suspend fun addQuakeItem(quake: QuakeDTO) = withContext(ioDispatcher) {
 
         quakeSqlService.create(quake)
-        return@withContext quakeService.create(quake)
+        quakeService.create(quake)
     }
 
 
     @Post(value = "/quake/addlist")
-    suspend fun addQuakeList(quakelist: QuakeDTOList) = withContext(ioDispatcher) {
+    fun addQuakeList(quakelist: QuakeDTOList) = flow<QuakeModel> {
 
         quakeSqlService.createList(quakelist.quakeList)
-        return@withContext quakeService.createList(quakelist.quakeList).toList()
-    }
+        quakeService.createList(quakelist.quakeList)
+    }.flowOn(ioDispatcher)
 
 
     @Get(value = "/quake/latest")

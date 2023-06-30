@@ -1,11 +1,13 @@
 package com.mgt.earthquake.model
 
 import io.micronaut.core.annotation.Creator
+import io.micronaut.core.annotation.Nullable
 import io.micronaut.data.annotation.GeneratedValue
 import io.micronaut.data.annotation.Id
 import io.micronaut.data.annotation.MappedEntity
 import io.micronaut.serde.annotation.Serdeable
 import org.bson.codecs.pojo.annotations.BsonCreator
+import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.codecs.pojo.annotations.BsonProperty
 import org.bson.types.ObjectId
 
@@ -14,9 +16,9 @@ import org.bson.types.ObjectId
 @MappedEntity(value = "quake")
 data class QuakeModel @Creator @BsonCreator constructor(
 
-    @GeneratedValue
     @field:Id
-    @param:BsonProperty("_id")
+    @param:BsonId
+    @field:Nullable
     var id: ObjectId? = null,
 
     @param:BsonProperty("title")
