@@ -1,21 +1,22 @@
 package com.mgt.earthquake.exception
 
 import com.mgt.earthquake.model.QuakeDTO
-import com.mgt.earthquake.model.QuakeModel
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.micronaut.core.type.Argument
 import io.micronaut.serde.ObjectMapper
 import io.micronaut.serde.annotation.SerdeImport
+import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 import org.slf4j.LoggerFactory
 
+@MicronautTest(transactional = false)
 @SerdeImport(RuntimeException::class)
-class ResponseErrorTest : FunSpec({
+class ResponseErrorTest(
+    val objectMapper: ObjectMapper
+) : FunSpec({
 
     val logger = LoggerFactory.getLogger(this::class.java)
-
-    val objectMapper = ObjectMapper.getDefault()
 
     test("serdes with code only should be OK") {
 
