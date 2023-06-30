@@ -4,11 +4,14 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.string.shouldContain
 import io.micronaut.core.type.Argument
 import io.micronaut.serde.ObjectMapper
+import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 import org.junit.jupiter.api.Assertions
 
-class QuakeModelTest: FunSpec({
-
-    val objectMapper = ObjectMapper.getDefault()
+@MicronautTest(startApplication = false, transactional = false)
+class QuakeModelTest(
+    val objectMapper: ObjectMapper,
+    val quakeCode: QuakeModelCodec
+): FunSpec({
 
     xtest("serialisation and deserialisation QuakeModel should work") {
 

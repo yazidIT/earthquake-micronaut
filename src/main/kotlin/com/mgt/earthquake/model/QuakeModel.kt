@@ -12,7 +12,6 @@ import org.bson.types.ObjectId
 
 @Serdeable
 @MappedEntity(value = "quake")
-@NamingStrategy
 data class QuakeModel @Creator @BsonCreator constructor(
 
     @field:Id
