@@ -4,9 +4,12 @@ import com.mgt.earthquake.client.EarthQuakeClient
 import com.mgt.earthquake.dao.QuakeRepository
 import com.mgt.earthquake.model.QuakeDTO
 import com.mgt.earthquake.model.QuakeModel
+import com.mgt.earthquake.model.QuakeModelDTO
 import com.mgt.earthquake.model.QuakeResponse
 import jakarta.inject.Singleton
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.YearMonth
@@ -19,23 +22,23 @@ class QuakeServiceImpl (
     private val quakeClient: EarthQuakeClient
 ) : QuakeService {
 
-    override suspend fun create(quakedto: QuakeDTO): QuakeModel? {
+    override suspend fun create(quakedto: QuakeDTO): QuakeModelDTO? =
 
-        val quakeitem = QuakeModel(
+        QuakeModel(
             title = quakedto.title,
             magnitude = quakedto.magnitude,
             quaketime = quakedto.quaketime,
             latitude = quakedto.latitude,
             longitude = quakedto.longitude,
             quakeid = quakedto.quakeid
-        )
+        ).let {
+            quakeRepo.save(it)?.let { quakeModel -> QuakeModelDTO(quakeModel) }
+        }
 
-        return quakeRepo.save(quakeitem)
-    }
 
-    override fun createList(quakeList: List<QuakeDTO>): Flow<QuakeModel> {
+    override fun createList(quakeList: List<QuakeDTO>): Flow<QuakeModelDTO> = flow {
 
-        val createlist = quakeList
+        quakeList
             .map {
                 QuakeModel(
                     title = it.title,
@@ -46,8 +49,11 @@ class QuakeServiceImpl (
                     quakeid = it.quakeid
                 )
             }
+            .toList().apply {
+                quakeRepo.saveAll(this)
+                    .collect { emit(QuakeModelDTO(it)) }
+            }
 
-        return quakeRepo.saveAll(createlist)
     }
 
     override fun latestQuake(): Flow<QuakeResponse> =
@@ -56,7 +62,10 @@ class QuakeServiceImpl (
             "geojson", 100, 5.0, 10.0,
             yesterdayDateZeroHundredHoursIso(), yesterdayDateTwentyThreeHundredHoursIso(), "time-asc")
 
-    override fun latestNumberOfQuake(number: Int): Flow<QuakeModel> = quakeRepo.findLatestNumber(number)
+    override fun latestNumberOfQuake(number: Int): Flow<QuakeModelDTO> = flow {
+        quakeRepo.findLatestNumber(number)
+            .collect { emit(QuakeModelDTO(it)) }
+    }
 
 
     /***

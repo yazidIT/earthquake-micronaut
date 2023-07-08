@@ -48,10 +48,10 @@ class QuakeRepositoryTest: FunSpec({
 
         underTest.save(quake1)
         val result = underTest.findAll().toList()
+        logger.info("$result")
 
         // then
         Assertions.assertTrue(result.isNotEmpty())
-        logger.info("$result")
 
         val result2 = underTest.findById(result[0].id!!)
 
@@ -73,7 +73,9 @@ class QuakeRepositoryTest: FunSpec({
             longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000hfxm")
 
         val createresult = underTest.save(quake2)
-        Assertions.assertNull(createresult)
+        println(createresult)
+
+        createresult shouldBe null
     }
 
     test("create Quake object, findByTitle & findByQuakeid - success") {

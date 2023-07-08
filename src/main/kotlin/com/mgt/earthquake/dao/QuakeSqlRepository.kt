@@ -59,10 +59,10 @@ class QuakeSqlRepository (
 
 
     @Transactional
-    suspend fun create(quakePojo: Quake): QuakeRecord? {
+    suspend fun create(quakePojo: Quake): QuakeRecord? =
 
         with(QUAKE) {
-            return Mono.from(
+            Mono.from(
                 dslContext.insertInto(this, LATITUDE, LONGITUDE, MAGNITUDE, QUAKEID, QUAKETIME, TITLE)
                     .values(quakePojo.latitude, quakePojo.longitude, quakePojo.magnitude,
                         quakePojo.quakeid, quakePojo.quaketime, quakePojo.title)
@@ -75,11 +75,10 @@ class QuakeSqlRepository (
                 }
                 .awaitFirstOrNull()
         }
-    }
 
 
     @Transactional
-    suspend fun update(quakePojo: Quake): QuakeRecord? {
+    suspend fun update(quakePojo: Quake): QuakeRecord? =
 
         with(QUAKE) {
             return Mono.from(
@@ -101,7 +100,6 @@ class QuakeSqlRepository (
                 }
                 .awaitFirstOrNull()
         }
-    }
 
 
     @Transactional
@@ -113,19 +111,17 @@ class QuakeSqlRepository (
 
 
     @Transactional
-    suspend fun delete(ids: List<Long>) {
+    suspend fun delete(ids: List<Long>): Int =
 
         Mono.from(
             dslContext.deleteFrom(QUAKE).where(QUAKE.ID.`in`(ids)))
             .awaitLast()
-    }
 
 
     @Transactional
-    suspend fun deleteAll() {
+    suspend fun deleteAll(): Int =
 
         Mono.from(
             dslContext.deleteFrom(QUAKE))
             .awaitLast()
-    }
 }
