@@ -4,6 +4,7 @@ import com.mgt.earthquake.model.QuakeDTO
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.string.shouldContain
 import io.micronaut.core.type.Argument
 import io.micronaut.serde.ObjectMapper
 import io.micronaut.serde.annotation.SerdeImport
@@ -92,27 +93,27 @@ class ResponseErrorTest(
         errordata.title shouldBe quake1.title
     }
 
-    xtest("serdes with exception error should be OK") {
+    test("serdes with exception error should be OK") {
 
         // given
         val exception = RuntimeException("Exception ResponseError Test")
-        val responseerror = ResponseError(500, exception)
+        val responseerror = ResponseError(500, exception).apply {
+            stacktrace = "Stacktrace Sample"
+        }
 
         val serResult = objectMapper.writeValueAsString(responseerror)
-        val desResult = objectMapper.readValue(serResult, Argument.ofTypeVariable(ResponseError::class.java,
-            null, null, Argument.of(RuntimeException::class.java)))
+        val desResult = objectMapper.readValue(serResult,
+            Argument.of(ResponseError::class.java, Argument.of(RuntimeException::class.java)))
 
         // then
         desResult shouldNotBe null
         desResult.code shouldBe responseerror.code
+        desResult.stacktrace shouldBe responseerror.stacktrace
 
-        println(objectMapper.writeValueAsString(desResult.error!!))
-
-        val errordata = objectMapper.readValue(objectMapper.writeValueAsString(desResult.error!!),
-                            Argument.of(RuntimeException::class.java))
-
-        errordata shouldNotBe null
-        errordata!!.message shouldBe responseerror.error.message
+        objectMapper.writeValueAsString(desResult.error!!)
+            .apply {
+                this shouldContain responseerror.error.message!!
+            }
     }
 })
 

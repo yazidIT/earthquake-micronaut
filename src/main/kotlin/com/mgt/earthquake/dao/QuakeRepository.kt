@@ -39,13 +39,16 @@ abstract class QuakeRepository(
 
         collection.find().sort(Sorts.descending("_id")).limit(number).asFlow()
 
-    suspend fun save(quakeModel: QuakeModel): QuakeModel? {
+    suspend fun save(quakeModel: QuakeModel): QuakeModel? =
 
-        if(findByQuakeid(quakeModel.quakeid) != null)
-            return null
+        findByQuakeid(quakeModel.quakeid).also {quakeItem ->
 
-        collection.insertOne(quakeModel).awaitFirstOrNull()?.let {
-            return quakeModel.copy(id = it.insertedId!!.asObjectId().value)
-        } ?: return null
-    }
+            return when(quakeItem) {
+                null ->
+                    collection.insertOne(quakeModel).awaitFirstOrNull()?.let {
+                        quakeModel.copy(id = it.insertedId!!.asObjectId().value)
+                    }
+                else -> null
+            }
+        }
 }

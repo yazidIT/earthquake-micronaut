@@ -22,6 +22,7 @@ import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.just
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.reactive.asFlow
 import org.bson.types.ObjectId
@@ -55,12 +56,12 @@ class QuakeControllerTest(
             latitude = 3.1234, longitude = 103.3, quakeid = "fwiohfrwier1")
 
         // when
-        coEvery { quakeService.create(any()) } returns quake
+        coEvery { quakeService.create(any()) } returns QuakeModelDTO(quake)
         coEvery { quakeSqlService.create(any()) } returns quakesql
 
         val request = HttpRequest.POST<Any>("/quake/add", quakedto)
 
-        val httpresponse = httpClient.toBlocking().exchange(request, Argument.of(QuakeModel::class.java))
+        val httpresponse = httpClient.toBlocking().exchange(request, Argument.of(QuakeModelDTO::class.java))
 
         // then
         Assertions.assertEquals(HttpStatus.OK, httpresponse.status)
@@ -77,8 +78,6 @@ class QuakeControllerTest(
         // given
         val quakedto = QuakeDTO(title = "Quake No 1", magnitude = 6.0, quaketime = "xxx",
             latitude = 3.1234, longitude = 103.3, quakeid = "fwiohfrwier1")
-        val quake = QuakeModel(title = "Quake No 1", magnitude = 6.0, quaketime = "xxx",
-            latitude = 3.1234, longitude = 103.3, quakeid = "fwiohfrwier1")
         val quakesql = QuakeRecord(id = 1234L, title = "Quake No 1", magnitude = 6.0, quaketime = "xxx",
             latitude = 3.1234, longitude = 103.3, quakeid = "fwiohfrwier1")
 
@@ -89,7 +88,7 @@ class QuakeControllerTest(
         val request = HttpRequest.POST<Any>("/quake/add", quakedto)
 
         val exception = shouldThrow<Exception> {
-            httpClient.toBlocking().exchange(request, Argument.of(QuakeModel::class.java))
+            httpClient.toBlocking().exchange(request, Argument.of(QuakeModelDTO::class.java))
         }
 
         // then
@@ -109,11 +108,13 @@ class QuakeControllerTest(
 
         // when
         coEvery { quakeSqlService.createList(any()) } just Runs
-        coEvery { quakeService.createList(any()) } returns flowOf(quake, quake2)
+        coEvery { quakeService.createList(any()) } returns flow {
+            flowOf(quake, quake2).collect{ emit(QuakeModelDTO(it))}
+        }
 
         val request = HttpRequest.POST<Any>("/quake/addlist", quakelist)
 
-        val httpresponse = httpClient.toBlocking().exchange(request, Argument.listOf(QuakeModel::class.java))
+        val httpresponse = httpClient.toBlocking().exchange(request, Argument.listOf(QuakeModelDTO::class.java))
 
         // then
         Assertions.assertEquals(HttpStatus.OK, httpresponse.status)
@@ -193,12 +194,14 @@ class QuakeControllerTest(
         val number = 4
 
         // when
-        coEvery { quakeService.latestNumberOfQuake(any()) } returns flowOf(quake1, quake2, quake3, quake4)
+        coEvery { quakeService.latestNumberOfQuake(any()) } returns flow {
+            flowOf(quake1, quake2, quake3, quake4).collect{ emit(QuakeModelDTO(it))}
+        }
 
         val request = HttpRequest.GET<String>("/quake/list/json/$number")
 
         var count = 0
-        streamClient.jsonStream(request, Argument.of(QuakeModel::class.java)).asFlow()
+        streamClient.jsonStream(request, Argument.of(QuakeModelDTO::class.java)).asFlow()
             .collect {
                 logger.info("$it")
                 count += 1
@@ -224,12 +227,14 @@ class QuakeControllerTest(
         val number = 4
 
         // when
-        coEvery { quakeService.latestNumberOfQuake(any()) } returns flowOf(quake1, quake2, quake3, quake4)
+        coEvery { quakeService.latestNumberOfQuake(any()) } returns flow {
+            flowOf(quake1, quake2, quake3, quake4).collect{ emit(QuakeModelDTO(it))}
+        }
 
         val request = HttpRequest.GET<String>("/quake/list/$number")
 
         var count = 0
-        streamClient.jsonStream(request, Argument.of(QuakeModel::class.java)).asFlow()
+        streamClient.jsonStream(request, Argument.of(QuakeModelDTO::class.java)).asFlow()
             .collect {
                 logger.info("$it")
                 count += 1
@@ -238,6 +243,38 @@ class QuakeControllerTest(
         // then
         Assertions.assertEquals(4, count)
 
+    }
+
+    test("GET /quake/stream/json/{number} should complete successfully") {
+
+        getMock(quakeService)
+        // given
+        val quake1 = QuakeModel(title = "Quake NE Japan1", magnitude = 6.5, latitude = 3.1414,
+            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000hfxm")
+        val quake2 = QuakeModel(title = "Quake NE Japan2", magnitude = 6.9, latitude = 5.73455,
+            longitude = 90.232323, quaketime = "2022-05-22T06:15:23.756000", quakeid = "us6000hfjk")
+        val quake3 = QuakeModel(title = "Quake NE Japan3", magnitude = 6.5, latitude = 3.1414,
+            longitude = 103.4534, quaketime = "2022-04-22T06:15:23.756000", quakeid = "us6000hfxn")
+        val quake4 = QuakeModel(title = "Quake NE Japan4", magnitude = 6.9, latitude = 5.73455,
+            longitude = 90.232323, quaketime = "2022-05-22T06:15:23.756000", quakeid = "us6000hfjl")
+        val number = 4
+
+        // when
+        coEvery { quakeService.latestNumberOfQuake(any()) } returns flow {
+            flowOf(quake1, quake2, quake3, quake4).collect{ emit(QuakeModelDTO(it))}
+        }
+
+        val request = HttpRequest.GET<String>("/quake/stream/json/$number")
+
+        var count = 0
+        streamClient.dataStream(request, Argument.of(QuakeModelDTO::class.java)).asFlow()
+            .collect {
+                logger.info("$it")
+                count += 1
+            }
+
+        // then
+        count shouldBe 4
     }
 
 }) {

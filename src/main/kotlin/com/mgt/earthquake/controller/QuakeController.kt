@@ -1,9 +1,6 @@
 package com.mgt.earthquake.controller
 
-import com.mgt.earthquake.model.QuakeDTO
-import com.mgt.earthquake.model.QuakeDTOList
-import com.mgt.earthquake.model.QuakeModel
-import com.mgt.earthquake.model.QuakeResponse
+import com.mgt.earthquake.model.*
 import com.mgt.earthquake.service.QuakeService
 import com.mgt.earthquake.service.QuakeSqlService
 import io.micronaut.http.MediaType
@@ -53,13 +50,19 @@ class QuakeController (
 
 
     @Get(value = "/quake/list/json/{number}", produces = [MediaType.APPLICATION_JSON_STREAM])
-    fun latestListJsonByNumber(@PathVariable number: Int): Flow<QuakeModel> =
+    fun latestListJsonByNumber(@PathVariable number: Int): Flow<QuakeModelDTO> =
 
         quakeService.latestNumberOfQuake(number).flowOn(ioDispatcher)
 
 
     @Get(value = "/quake/list/{number}")
-    fun latestListByNumber(@PathVariable number: Int): Flow<QuakeModel> =
+    fun latestListByNumber(@PathVariable number: Int): Flow<QuakeModelDTO> =
+
+        quakeService.latestNumberOfQuake(number).flowOn(ioDispatcher)
+
+
+    @Get(value = "/quake/stream/json/{number}", produces = [MediaType.TEXT_EVENT_STREAM])
+    fun latestStreamJsonByNumber(@PathVariable number: Int): Flow<QuakeModelDTO> =
 
         quakeService.latestNumberOfQuake(number).flowOn(ioDispatcher)
 }

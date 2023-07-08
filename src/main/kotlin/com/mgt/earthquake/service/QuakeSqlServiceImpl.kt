@@ -16,23 +16,23 @@ class QuakeSqlServiceImpl (
     private val quakeRepo: QuakeSqlRepository
 ) : QuakeSqlService {
 
-    override suspend fun create(quakedto: QuakeDTO): QuakeRecord? {
+    override suspend fun create(quakedto: QuakeDTO): QuakeRecord? =
 
-        val quakeitem = Quake(
+        Quake(
             title = quakedto.title,
             magnitude = quakedto.magnitude,
             quaketime = quakedto.quaketime,
             latitude = quakedto.latitude,
             longitude = quakedto.longitude,
             quakeid = quakedto.quakeid
-        )
+        ).let {
+            quakeRepo.create(it)
+        }
 
-        return quakeRepo.create(quakeitem)
-    }
 
     override suspend fun createList(quakeList: List<QuakeDTO>) {
 
-        val createlist = quakeList
+        quakeList
             .map {
                 Quake(
                     title = it.title,
@@ -43,8 +43,9 @@ class QuakeSqlServiceImpl (
                     quakeid = it.quakeid
                 )
             }
-
-        quakeRepo.createQuakes(createlist)
+            .apply {
+                quakeRepo.createQuakes(this)
+            }
     }
 
 
