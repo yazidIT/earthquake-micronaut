@@ -28,34 +28,28 @@ class QuakeSqlRepository (
 
 
     @ReadOnly
-    fun findAll(): Flow<Quake> {
+    fun findAll() =
 
-        return Flux.from(
-            dslContext.selectFrom(QUAKE))
+        Flux.from(dslContext.selectFrom(QUAKE))
             .map { it.into(Quake::class.java) }
             .asFlow()
-    }
+
+
+
+    @ReadOnly
+    suspend fun findById(id: Long) =
+
+        Mono.from(dslContext.selectFrom(QUAKE).where(QUAKE.ID.eq(id)))
+            .map { it.into(Quake::class.java) }
+            .awaitFirstOrNull()
 
 
     @ReadOnly
-    suspend fun findById(id: Long): Quake? {
+    suspend fun findByQuakeId(quakeid: String) =
 
-        return Mono.from(
-            dslContext.selectFrom(QUAKE)
-                .where(QUAKE.ID.eq(id)))
+        Mono.from(dslContext.selectFrom(QUAKE).where(QUAKE.QUAKEID.eq(quakeid)))
             .map { it.into(Quake::class.java) }
             .awaitFirstOrNull()
-    }
-
-    @ReadOnly
-    suspend fun findByQuakeId(quakeid: String): Quake? {
-
-        return Mono.from(
-            dslContext.selectFrom(QUAKE)
-                .where(QUAKE.QUAKEID.eq(quakeid)))
-            .map { it.into(Quake::class.java) }
-            .awaitFirstOrNull()
-    }
 
 
     @Transactional
@@ -111,17 +105,11 @@ class QuakeSqlRepository (
 
 
     @Transactional
-    suspend fun delete(ids: List<Long>): Int =
+    suspend fun delete(ids: List<Long>) =
 
-        Mono.from(
-            dslContext.deleteFrom(QUAKE).where(QUAKE.ID.`in`(ids)))
-            .awaitLast()
+        Mono.from(dslContext.deleteFrom(QUAKE).where(QUAKE.ID.`in`(ids))).awaitLast()
 
 
     @Transactional
-    suspend fun deleteAll(): Int =
-
-        Mono.from(
-            dslContext.deleteFrom(QUAKE))
-            .awaitLast()
+    suspend fun deleteAll() = Mono.from(dslContext.deleteFrom(QUAKE)).awaitLast()
 }

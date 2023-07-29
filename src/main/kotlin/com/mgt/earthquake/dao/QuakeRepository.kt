@@ -26,22 +26,15 @@ abstract class QuakeRepository(
     abstract suspend fun findByQuakeid(quakeid: String): QuakeModel?
     abstract override suspend fun findById(id: ObjectId): QuakeModel?
 
-    fun customFindByTitle(title: String): Flow<QuakeModel> =
+    fun customFindByTitle(title: String) = collection.find(eq("title", title)).asFlow()
 
-        collection.find(eq("title", title))
-            .asFlow()
+    suspend fun customFindById(id: ObjectId) = collection.find(eq("_id", id)).awaitFirstOrNull()
 
-    suspend fun customFindById(id: ObjectId): QuakeModel? =
+    fun findLatestNumber(number: Int) = collection.find().sort(Sorts.descending("_id")).limit(number).asFlow()
 
-        collection.find(eq("_id", id)).awaitFirstOrNull()
+    suspend fun save(quakeModel: QuakeModel) =
 
-    fun findLatestNumber(number: Int): Flow<QuakeModel> =
-
-        collection.find().sort(Sorts.descending("_id")).limit(number).asFlow()
-
-    suspend fun save(quakeModel: QuakeModel): QuakeModel? =
-
-        findByQuakeid(quakeModel.quakeid).also {quakeItem ->
+        findByQuakeid(quakeModel.quakeid).also { quakeItem ->
 
             return when(quakeItem) {
                 null ->

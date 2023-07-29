@@ -2,10 +2,7 @@ package com.mgt.earthquake.service
 
 import com.mgt.earthquake.client.EarthQuakeClient
 import com.mgt.earthquake.dao.QuakeRepository
-import com.mgt.earthquake.model.QuakeDTO
-import com.mgt.earthquake.model.QuakeModel
-import com.mgt.earthquake.model.QuakeModelDTO
-import com.mgt.earthquake.model.QuakeResponse
+import com.mgt.earthquake.model.*
 import jakarta.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -32,7 +29,7 @@ class QuakeServiceImpl (
             longitude = quakedto.longitude,
             quakeid = quakedto.quakeid
         ).let {
-            quakeRepo.save(it)?.let { quakeModel -> QuakeModelDTO(quakeModel) }
+            quakeRepo.save(it)?.let { quakeModel -> quakeModel.toDTO() }
         }
 
 
@@ -51,7 +48,7 @@ class QuakeServiceImpl (
             }
             .toList().apply {
                 quakeRepo.saveAll(this)
-                    .collect { emit(QuakeModelDTO(it)) }
+                    .collect { emit(it.toDTO()) }
             }
 
     }
@@ -64,7 +61,7 @@ class QuakeServiceImpl (
 
     override fun latestNumberOfQuake(number: Int): Flow<QuakeModelDTO> = flow {
         quakeRepo.findLatestNumber(number)
-            .collect { emit(QuakeModelDTO(it)) }
+            .collect { emit(it.toDTO()) }
     }
 
 

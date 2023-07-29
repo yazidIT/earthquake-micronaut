@@ -25,7 +25,7 @@ sonarqube {
     }
 }
 
-version = "0.2"
+version = "0.3"
 group = "com.mgt.earthquake"
 
 val kotlinVersion= project.properties["kotlinVersion"]
