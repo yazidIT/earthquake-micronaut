@@ -26,7 +26,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.reactive.asFlow
 import org.bson.types.ObjectId
-import org.junit.jupiter.api.Assertions
 import org.slf4j.LoggerFactory
 
 @MicronautTest(transactional = false)
@@ -56,7 +55,7 @@ class QuakeControllerTest(
             latitude = 3.1234, longitude = 103.3, quakeid = "fwiohfrwier1")
 
         // when
-        coEvery { quakeService.create(any()) } returns QuakeModelDTO(quake)
+        coEvery { quakeService.create(any()) } returns quake.toDTO()
         coEvery { quakeSqlService.create(any()) } returns quakesql
 
         val request = HttpRequest.POST<Any>("/quake/add", quakedto)
@@ -64,8 +63,8 @@ class QuakeControllerTest(
         val httpresponse = httpClient.toBlocking().exchange(request, Argument.of(QuakeModelDTO::class.java))
 
         // then
-        Assertions.assertEquals(HttpStatus.OK, httpresponse.status)
-        Assertions.assertTrue(httpresponse.body.isPresent)
+        httpresponse.status shouldBe HttpStatus.OK
+        httpresponse.body.isPresent.shouldBe(true)
 
         val data = httpresponse.body.get()
 
@@ -109,7 +108,7 @@ class QuakeControllerTest(
         // when
         coEvery { quakeSqlService.createList(any()) } just Runs
         coEvery { quakeService.createList(any()) } returns flow {
-            flowOf(quake, quake2).collect{ emit(QuakeModelDTO(it))}
+            flowOf(quake, quake2).collect{ emit(it.toDTO())}
         }
 
         val request = HttpRequest.POST<Any>("/quake/addlist", quakelist)
@@ -117,8 +116,8 @@ class QuakeControllerTest(
         val httpresponse = httpClient.toBlocking().exchange(request, Argument.listOf(QuakeModelDTO::class.java))
 
         // then
-        Assertions.assertEquals(HttpStatus.OK, httpresponse.status)
-        Assertions.assertTrue(httpresponse.body.isPresent)
+        httpresponse.status shouldBe HttpStatus.OK
+        httpresponse.body.isPresent.shouldBe(true)
 
         val data = httpresponse.body.get()
         logger.info("$data")
@@ -153,8 +152,8 @@ class QuakeControllerTest(
         val httpresponse = httpClient.toBlocking().exchange(request, Argument.listOf(QuakeResponse::class.java))
 
         // then
-        Assertions.assertEquals(HttpStatus.OK, httpresponse.status)
-        Assertions.assertTrue(httpresponse.body.isPresent)
+        httpresponse.status shouldBe HttpStatus.OK
+        httpresponse.body.isPresent.shouldBe(true)
 
         val data = httpresponse.body.get()
         logger.info("$data")
@@ -172,8 +171,8 @@ class QuakeControllerTest(
         val httpresponse = httpClient.toBlocking().exchange(request, Argument.listOf(QuakeResponse::class.java))
 
         // then
-        Assertions.assertEquals(HttpStatus.OK, httpresponse.status)
-        Assertions.assertTrue(httpresponse.body.isPresent)
+        httpresponse.status shouldBe HttpStatus.OK
+        httpresponse.body.isPresent.shouldBe(true)
 
         val data = httpresponse.body.get()
         logger.info("$data")
@@ -195,7 +194,7 @@ class QuakeControllerTest(
 
         // when
         coEvery { quakeService.latestNumberOfQuake(any()) } returns flow {
-            flowOf(quake1, quake2, quake3, quake4).collect{ emit(QuakeModelDTO(it))}
+            flowOf(quake1, quake2, quake3, quake4).collect{ emit(it.toDTO())}
         }
 
         val request = HttpRequest.GET<String>("/quake/list/json/$number")
@@ -208,7 +207,7 @@ class QuakeControllerTest(
             }
 
         // then
-        Assertions.assertEquals(4, count)
+        count shouldBe 4
     }
 
 
@@ -228,7 +227,7 @@ class QuakeControllerTest(
 
         // when
         coEvery { quakeService.latestNumberOfQuake(any()) } returns flow {
-            flowOf(quake1, quake2, quake3, quake4).collect{ emit(QuakeModelDTO(it))}
+            flowOf(quake1, quake2, quake3, quake4).collect{ emit(it.toDTO())}
         }
 
         val request = HttpRequest.GET<String>("/quake/list/$number")
@@ -241,7 +240,7 @@ class QuakeControllerTest(
             }
 
         // then
-        Assertions.assertEquals(4, count)
+        count shouldBe 4
 
     }
 
@@ -261,7 +260,7 @@ class QuakeControllerTest(
 
         // when
         coEvery { quakeService.latestNumberOfQuake(any()) } returns flow {
-            flowOf(quake1, quake2, quake3, quake4).collect{ emit(QuakeModelDTO(it))}
+            flowOf(quake1, quake2, quake3, quake4).collect{ emit(it.toDTO())}
         }
 
         val request = HttpRequest.GET<String>("/quake/stream/json/$number")

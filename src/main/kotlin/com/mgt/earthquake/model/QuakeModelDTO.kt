@@ -11,14 +11,14 @@ data class QuakeModelDTO(
     var latitude: Double,
     var longitude: Double,
     var quakeid: String
-) {
-    constructor(quakeModel: QuakeModel): this(
-        quakeModel.id?.let { it.toHexString() } ?: "-",
-        quakeModel.title,
-        quakeModel.magnitude,
-        quakeModel.quaketime,
-        quakeModel.latitude,
-        quakeModel.longitude,
-        quakeModel.quakeid
-    )
-}
+)
+
+fun QuakeModel.toDTO(): QuakeModelDTO = QuakeModelDTO(
+    this.id?.let { it.toHexString() } ?: "-",
+    this.title,
+    this.magnitude,
+    this.quaketime,
+    this.latitude,
+    this.longitude,
+    this.quakeid
+)
